@@ -58,8 +58,10 @@ const nextConfig: NextConfig = {
   },
 
   // Experimental optimisations
+  // NOTE: optimizeCss is intentionally disabled — it requires lightningcss native
+  // Linux binaries that conflict with cross-platform Docker/Nixpacks builds.
+  // Tailwind v4 already handles CSS minification natively.
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
 };
