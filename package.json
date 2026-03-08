@@ -18,8 +18,8 @@
     "tailwind-merge": "^3.5.0"
   },
   "optionalDependencies": {
-    "@tailwindcss/oxide-linux-x64-gnu": "*",
-    "lightningcss-linux-x64-gnu": "*"
+    "lightningcss-linux-x64-gnu": "*",
+    "@tailwindcss/oxide-linux-x64-gnu": "*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

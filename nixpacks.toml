@@ -1,13 +1,15 @@
 # ============================================================
 #  Nixpacks build configuration for Coolify
-#  Docs: https://nixpacks.com/docs/configuration/file
 # ============================================================
 
 [phases.setup]
-nixPkgs = ["nodejs_20"]  # Pin Node.js 20 LTS
+nixPkgs = ["nodejs_20"]
 
 [phases.install]
-cmds = ["npm ci"]        # Faster, deterministic install vs npm install
+# Use npm install --include=optional so platform-specific binaries
+# (lightningcss-linux-x64-gnu, @tailwindcss/oxide-linux-x64-gnu) are installed.
+# npm ci would skip optional deps if .npmrc had omit=optional previously.
+cmds = ["npm install --include=optional --prefer-offline"]
 
 [phases.build]
 cmds = ["npm run build"]
@@ -17,4 +19,4 @@ cmd = "node .next/standalone/server.js"
 
 [variables]
 NODE_ENV = "production"
-NEXT_TELEMETRY_DISABLED = "1"   # Disable Next.js telemetry in build
+NEXT_TELEMETRY_DISABLED = "1"
