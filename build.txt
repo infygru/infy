@@ -1,0 +1,112 @@
+﻿
+> infygru@0.1.0 build
+> next build && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.production
+- Experiments (use with caution):
+  ┬╖ optimizePackageImports
+
+  Creating an optimized production build ...
+node.exe : 
+At C:\Program Files\n
+odejs\npm.ps1:29 
+char:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (:String   
+ ) [], RemoteExce    
+ption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+> Build error 
+occurred
+Error: Turbopack 
+build failed with 1 
+errors:
+./src/app/globals.css
+Error evaluating 
+Node.js code
+Error: Cannot find 
+module '../lightningc
+ss.win32-x64-msvc.nod
+e'
+Require stack:
+- D:\infygru\node_mod
+ules\lightningcss\nod
+e\index.js
+- D:\infygru\node_mod
+ules\@tailwindcss\nod
+e\dist\index.js
+- D:\infygru\node_mod
+ules\@tailwindcss\pos
+tcss\dist\index.js
+- D:\infygru\.next\bu
+ild\chunks\[root-of-t
+he-server]__51225daf.
+_.js
+- D:\infygru\.next\bu
+ild\chunks\[turbopack
+]_runtime.js
+- D:\infygru\.next\bu
+ild\postcss.js
+    [at Function._res
+olveFilename (node:in
+ternal/modules/cjs/lo
+ader:1401:15)]
+    [at 
+defaultResolveImpl (n
+ode:internal/modules/
+cjs/loader:1057:19)]
+    [at resolveForCJS
+WithHooks (node:inter
+nal/modules/cjs/loade
+r:1062:22)]
+    [at 
+Function._load (node:
+internal/modules/cjs/
+loader:1211:37)]
+    [at TracingChanne
+l.traceSync (node:dia
+gnostics_channel:322:
+14)]
+    [at 
+wrapModuleLoad (node:
+internal/modules/cjs/
+loader:235:24)]
+    [at 
+Module.require (node:
+internal/modules/cjs/
+loader:1487:12)]
+    [at require (node
+:internal/modules/hel
+pers:135:16)]
+    [at 
+Object.<anonymous> (D
+:\infygru\node_module
+s\lightningcss\node\i
+ndex.js:22:22)]
+    [at 
+Module._compile (node
+:internal/modules/cjs
+/loader:1730:14)]
+
+Import trace:
+  Client Component 
+Browser:
+    ./src/app/globals
+.css [Client 
+Component Browser]
+    
+./src/app/layout.tsx 
+[Server Component]
+
+
+    at ignore-listed 
+frames

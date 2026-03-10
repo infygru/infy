@@ -1,0 +1,47 @@
+
+> infygru@0.1.0 build
+> next build && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.production
+- Experiments (use with caution):
+  · optimizePackageImports
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 7.6s
+  Running TypeScript ...
+  Collecting page data using 15 workers ...
+  Generating static pages using 15 workers (0/23) ...
+  Generating static pages using 15 workers (5/23) 
+  Generating static pages using 15 workers (11/23) 
+  Generating static pages using 15 workers (17/23) 
+✓ Generating static pages using 15 workers (23/23) in 724.2ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ƒ /api/health
+├ ○ /careers
+├ ○ /checkout
+├ ○ /contact
+├ ○ /legal/cookie
+├ ○ /legal/privacy
+├ ○ /legal/refund
+├ ○ /legal/terms
+├ ○ /offerings
+├ ○ /pricing
+└ ● /services/[slug]
+  ├ /services/digital-transformation
+  ├ /services/web-development
+  ├ /services/n8n-automation
+  └ [+6 more paths]
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
+'cp' is not recognized as an internal or external command,
+operable program or batch file.
