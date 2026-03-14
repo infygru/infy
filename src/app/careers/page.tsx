@@ -1,10 +1,23 @@
 import { Button } from "@/components/ui/Button";
 import { Briefcase, MapPin, Clock, ArrowRight } from "lucide-react";
+import type { Metadata } from "next";
 
-export const metadata = {
-    title: "Careers | Join Top IT Company in Chennai | Infygru",
-    description: "Explore career opportunities at Infygru, a leading IT solutions provider in Chennai. We are hiring Senior Developers, Visual Designers, and Backend Developers.",
-    keywords: "IT jobs Chennai, software developer jobs Chennai, visual designer jobs Chennai, backend developer careers, tech careers India"
+export const metadata: Metadata = {
+    title: "Careers | Join Chennai's Top IT & Compliance Company | Infygru",
+    description: "Join Infygru's elite team in Chennai. Open roles for Senior Full Stack Developers, Visual Designers, and Backend Engineers. Hybrid & on-site positions available.",
+    keywords: ["IT jobs Chennai", "software developer jobs India", "Next.js developer career", "backend engineer Chennai", "tech careers India"],
+    alternates: { canonical: "https://infygru.com/careers" },
+    openGraph: {
+        title: "Careers at Infygru | Build India's Digital Future",
+        description: "Join Chennai's fastest-growing IT and compliance company. We're hiring top engineers, designers, and automation experts.",
+        url: "https://infygru.com/careers",
+        images: [{ url: "https://infygru.com/og-image.png", width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Careers at Infygru | IT Jobs Chennai",
+        description: "Elite IT and compliance careers in Chennai. Full-time, hybrid roles open now.",
+    },
 };
 
 export default function Careers() {

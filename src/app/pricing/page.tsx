@@ -1,148 +1,396 @@
 import Link from "next/link";
-import { Check, Info } from "lucide-react";
+import { Check, ArrowRight, Zap, Users, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import type { Metadata } from "next";
 
-export const metadata = {
-    title: "Pricing | Web Development & IT Solutions in Chennai | Infygru",
-    description: "Transparent pricing for enterprise web applications, n8n automation, cloud migration, and IT consulting services in Chennai. Explore our Starter, Professional, and Custom Enterprise plans.",
-    keywords: "web development pricing chennai, IT solutions cost india, n8n automation pricing, cloud migration services cost, custom enterprise software pricing"
+export const metadata: Metadata = {
+    title: "Pricing | Web Development, Automation, Cloud & Business Registration Services",
+    description: "Transparent, no-hidden-fee pricing for enterprise web development, n8n automation, cloud migration, company registration, GST filing, and compliance services. Starting ₹999.",
+    keywords: ["web development pricing Chennai", "n8n automation pricing India", "cloud migration cost", "company registration charges India", "GST filing fee", "IT services pricing India"],
+    alternates: { canonical: "https://infygru.com/pricing" },
+    openGraph: {
+        title: "Pricing | Transparent IT & Business Service Plans | Infygru",
+        description: "No hidden fees. Plans starting ₹999 for IT services, cloud, automation, and full business compliance packages.",
+        url: "https://infygru.com/pricing",
+        images: [{ url: "https://infygru.com/og-image.png", width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Infygru Pricing | Transparent IT & Business Plans",
+        description: "Web development, automation, cloud & compliance pricing — starting ₹999. No hidden fees.",
+    },
 };
 
+// ─── Plan types ─────────────────────────────────────────────────────────────
+type Plan = {
+    name: string;
+    badge: string;
+    price: string;
+    priceNote?: string;
+    description: string;
+    features: string[];
+    popular?: boolean;
+    cta: string;
+    ctaLink: string;
+};
+
+type PricingCategory = {
+    id: string;
+    label: string;
+    title: string;
+    subtitle: string;
+    color: string;
+    accentBg: string;
+    accentText: string;
+    plans: Plan[];
+};
+
+// ─── Data ────────────────────────────────────────────────────────────────────
+const categories: PricingCategory[] = [
+    {
+        id: "it-services",
+        label: "IT & Cloud Services",
+        title: "Web, Cloud & Automation Pricing",
+        subtitle: "Enterprise IT solutions designed to scale — no lock-ins, no hidden charges.",
+        color: "border-amber-200",
+        accentBg: "bg-amber-50",
+        accentText: "text-amber-700",
+        plans: [
+            {
+                name: "Starter",
+                badge: "Fast Launch",
+                price: "₹14,999",
+                priceNote: "/project",
+                description: "For emerging businesses needing a professional digital presence fast.",
+                features: [
+                    "Custom Website (up to 5 pages)",
+                    "Basic SEO Setup & Meta Tags",
+                    "Mobile-First Responsive Design",
+                    "Contact & Lead Capture Form",
+                    "SSL Certificate Installation",
+                    "1 Month Technical Support",
+                ],
+                cta: "Place Order",
+                ctaLink: "/checkout?plan=starter",
+            },
+            {
+                name: "Professional",
+                badge: "Most Popular",
+                price: "₹49,999",
+                priceNote: "/project",
+                description: "For growing businesses needing advanced apps and automation.",
+                features: [
+                    "Advanced Web App (Next.js / React)",
+                    "Headless CMS Integration",
+                    "n8n Automation (up to 5 workflows)",
+                    "Comprehensive SEO Configuration",
+                    "Analytics Dashboard Setup",
+                    "Database Architecture Design",
+                    "3 Months Priority Support",
+                ],
+                popular: true,
+                cta: "Place Order",
+                ctaLink: "/checkout?plan=professional",
+            },
+            {
+                name: "Enterprise",
+                badge: "Full Scale",
+                price: "Custom",
+                description: "Complete digital transformation, cloud infrastructure, and unlimited scale.",
+                features: [
+                    "Zero-Downtime Cloud Migration (AWS/Azure/GCP)",
+                    "Unlimited n8n Automations",
+                    "DevOps & CI/CD Pipeline Setup",
+                    "AI & Computer Vision Integration",
+                    "Custom Security Operations (SOC)",
+                    "Dedicated Account Manager",
+                    "24/7 SLA-Backed Support",
+                    "Custom SaaS Architecture",
+                ],
+                cta: "Contact Architecture Team",
+                ctaLink: "https://wa.me/918300290019",
+            },
+        ],
+    },
+    {
+        id: "business-registration",
+        label: "Business Registration & Licensing",
+        title: "Business Registration Pricing",
+        subtitle: "End-to-end business registration and compliance — from company incorporation to FSSAI licenses.",
+        color: "border-green-200",
+        accentBg: "bg-green-50",
+        accentText: "text-green-700",
+        plans: [
+            {
+                name: "Basic",
+                badge: "Single Service",
+                price: "₹2,499",
+                priceNote: "/registration",
+                description: "For entrepreneurs needing one specific registration completed quickly.",
+                features: [
+                    "Any One Registration Service",
+                    "Document Collection & Verification",
+                    "Government Filing & Submission",
+                    "Registration Certificate Delivery",
+                    "Email Support",
+                    "7-Day Turnaround",
+                ],
+                cta: "Get Started",
+                ctaLink: "/contact",
+            },
+            {
+                name: "Growth",
+                badge: "Most Popular",
+                price: "₹7,999",
+                priceNote: "/bundle",
+                description: "Startup bundle — incorporate your company and get all essential registrations.",
+                features: [
+                    "Company Incorporation (Pvt. Ltd / LLP / OPC)",
+                    "GST Registration & Filing",
+                    "MSME / Udyam Registration",
+                    "Trademark Search & Registration",
+                    "Digital Signature Certificate (DSC)",
+                    "Priority Processing",
+                    "Dedicated Compliance Expert",
+                ],
+                popular: true,
+                cta: "Get Started",
+                ctaLink: "/contact",
+            },
+            {
+                name: "Full Compliance",
+                badge: "All-In",
+                price: "Custom",
+                description: "Food businesses, exporters, and ISO-aspirant companies — all registrations handled.",
+                features: [
+                    "All Growth Plan Services",
+                    "FSSAI License (Basic / State / Central)",
+                    "Import Export Code (IEC)",
+                    "APEDA Registration",
+                    "Barcode Registration",
+                    "IATF Certification Support",
+                    "Ongoing Compliance Retainer",
+                    "Dedicated Account Manager",
+                ],
+                cta: "Contact Our Experts",
+                ctaLink: "https://wa.me/918300290019",
+            },
+        ],
+    },
+    {
+        id: "compliance-taxation",
+        label: "Compliance & Taxation",
+        title: "Compliance & Taxation Pricing",
+        subtitle: "From ITR filing to annual audits — stay legally compliant with zero stress.",
+        color: "border-purple-200",
+        accentBg: "bg-purple-50",
+        accentText: "text-purple-700",
+        plans: [
+            {
+                name: "Individual",
+                badge: "Freelancers & Salaried",
+                price: "₹999",
+                priceNote: "/year",
+                description: "Hassle-free ITR filing for salaried employees and freelancers.",
+                features: [
+                    "ITR-1 / ITR-2 Filing",
+                    "Income Tax Computation",
+                    "Form 16 & TDS Reconciliation",
+                    "Capital Gains Reporting",
+                    "Refund Tracking",
+                    "Email & WhatsApp Support",
+                ],
+                cta: "File Now",
+                ctaLink: "/contact",
+            },
+            {
+                name: "Business",
+                badge: "Most Popular",
+                price: "₹4,999",
+                priceNote: "/year",
+                description: "Full compliance for small and medium businesses — GST returns, TDS, and ITR.",
+                features: [
+                    "Business ITR Filing (ITR-3 / ITR-5 / ITR-6)",
+                    "Monthly GST Return Filing (GSTR-1 / GSTR-3B)",
+                    "TDS/TCS Return Filing",
+                    "Annual Accounts Preparation",
+                    "Director KYC & ROC Compliance",
+                    "Dedicated CA Support",
+                    "Quarterly Review Calls",
+                ],
+                popular: true,
+                cta: "Get Started",
+                ctaLink: "/contact",
+            },
+            {
+                name: "Enterprise Audit",
+                badge: "Corporates",
+                price: "Custom",
+                description: "Full statutory audit, IATF certification, and secretarial compliance for large companies.",
+                features: [
+                    "Statutory & Internal Auditing",
+                    "IATF Certification Consulting",
+                    "Transfer Pricing Documentation",
+                    "Secretarial Compliance (CS Services)",
+                    "Board Meeting Minutes & Reporting",
+                    "External Auditor Liaison",
+                    "Dedicated Senior CA + CS Team",
+                    "Priority Regulatory Update Alerts",
+                ],
+                cta: "Contact Our CA Team",
+                ctaLink: "https://wa.me/918300290019",
+            },
+        ],
+    },
+];
+
+// ─── Sub-components ──────────────────────────────────────────────────────────
+function PlanCard({ plan, accentBg, accentText }: { plan: Plan; accentBg: string; accentText: string }) {
+    return (
+        <div className={`relative flex flex-col h-full rounded-2xl border bg-white transition-all duration-300 ${plan.popular
+            ? 'border-amber-400 shadow-2xl ring-4 ring-amber-400/10 z-10'
+            : 'border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1'
+            }`}>
+            {plan.popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="font-heading bg-amber-500 text-white text-xs font-extrabold uppercase tracking-widest py-1.5 px-6 rounded-full shadow-lg whitespace-nowrap">
+                        {plan.badge}
+                    </span>
+                </div>
+            )}
+
+            <div className="p-7 flex-1 flex flex-col">
+                {!plan.popular && (
+                    <span className={`inline-block text-xs font-bold uppercase tracking-widest ${accentText} ${accentBg} px-3 py-1 rounded-full mb-4 self-start`}>
+                        {plan.badge}
+                    </span>
+                )}
+                {plan.popular && <div className="mt-4" />}
+
+                <h3 className="font-heading text-2xl font-extrabold text-slate-900 mb-2">{plan.name}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed mb-6 flex-none min-h-[50px]">{plan.description}</p>
+
+                <div className="mb-6 pb-6 border-b border-slate-100">
+                    <span className="font-heading text-4xl font-extrabold text-slate-900 tracking-tight">{plan.price}</span>
+                    {plan.priceNote && <span className="text-slate-400 font-medium text-base ml-2">{plan.priceNote}</span>}
+                </div>
+
+                <ul className="space-y-3 flex-1">
+                    {plan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5 text-sm">
+                            <div className={`mt-0.5 rounded-full p-0.5 shrink-0 ${plan.popular ? 'text-amber-600' : 'text-slate-400'}`}>
+                                <Check className="w-4 h-4" strokeWidth={2.5} />
+                            </div>
+                            <span className="text-slate-700 font-medium leading-snug">{feature}</span>
+                        </li>
+                    ))}
+                </ul>
+
+                <div className="mt-8">
+                    <Link
+                        href={plan.ctaLink}
+                        target={plan.ctaLink.startsWith("http") ? "_blank" : undefined}
+                        rel={plan.ctaLink.startsWith("http") ? "noopener noreferrer" : undefined}
+                        className="block w-full"
+                    >
+                        <Button
+                            variant={plan.popular ? "default" : "outline"}
+                            className={`w-full font-heading font-bold h-12 rounded-xl ${plan.popular
+                                ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg hover:shadow-amber-200 hover:-translate-y-0.5 transition-all border-0'
+                                : 'border-slate-200 hover:bg-slate-50 text-slate-900'
+                                }`}
+                        >
+                            {plan.cta} {plan.popular && <ArrowRight className="ml-2 w-4 h-4" />}
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 export default function Pricing() {
-    const plans = [
-        {
-            name: "Starter",
-            badge: "Fast Launch",
-            price: "₹14,999",
-            description: "Perfect for emerging businesses needing a professional digital presence rapidly.",
-            features: [
-                "Custom Website (up to 5 pages)",
-                "Basic SEO Structure Setup",
-                "Mobile Responsive Design",
-                "Contact Form Integration",
-                "1 Month Technical Support",
-                "SSL Certificate Installation"
-            ],
-        },
-        {
-            name: "Professional",
-            badge: "Most Popular",
-            price: "₹49,999",
-            description: "Ideal for growing companies needing advanced web applications and basic automations.",
-            features: [
-                "Advanced Web App Development",
-                "n8n Automation (Up to 5 workflows)",
-                "Comprehensive SEO Configuration",
-                "Headless CMS Integration",
-                "Analytics Dashboard Setup",
-                "3 Months Priority Support",
-                "Database Architecture Design"
-            ],
-            popular: true,
-        },
-        {
-            name: "Enterprise",
-            badge: "Full Scale",
-            price: "Custom",
-            description: "Complete digital transformation, cloud infrastructure, and infinite scalability.",
-            features: [
-                "Zero-Downtime Cloud Migration",
-                "Unlimited n8n Automations",
-                "Dedicated Account Manager",
-                "24/7 SLA Backed Support",
-                "Custom Security Operations Center",
-                "AI Computer Vision Integration",
-                "Custom SaaS Architecture"
-            ],
-        }
+    const valueProps = [
+        { icon: <Zap className="w-5 h-5" />, label: "No Hidden Fees", desc: "The price you see is the price you pay." },
+        { icon: <Users className="w-5 h-5" />, label: "Dedicated Experts", desc: "Assigned account manager from Day 1." },
+        { icon: <Building2 className="w-5 h-5" />, label: "Enterprise Ready", desc: "Scales from startups to large corporates." },
     ];
 
     return (
-        <div className="min-h-screen bg-background pb-32 relative font-sans">
-            {/* Subtle top ambient glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-
+        <div className="min-h-screen bg-white">
             {/* Hero */}
-            <section className="pt-28 pb-16 lg:pt-36 relative z-10 text-center">
-                <div className="container mx-auto px-4 max-w-4xl">
-                    <div className="inline-flex items-center gap-2 mb-8 px-5 py-2.5 rounded-full border border-primary/20 bg-primary/5 text-primary font-bold text-sm tracking-wide font-heading">
+            <section className="pt-28 pb-14 text-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#f8fafc_1px,transparent_1px),linear-gradient(to_bottom,#f8fafc_1px,transparent_1px)] bg-[size:3rem_3rem]" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-amber-400/8 rounded-full blur-[80px]" />
+                <div className="container mx-auto px-4 max-w-3xl relative z-10">
+                    <span className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-amber-200 bg-amber-50 text-amber-700 font-bold text-xs tracking-widest uppercase font-heading">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                         Investment Plans
-                    </div>
-                    <h1 className="font-heading text-5xl md:text-6xl font-extrabold mb-8 text-foreground tracking-tight">Flexible, Transparent Pricing.</h1>
-                    <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-3xl mx-auto font-light">
-                        Choose the perfect plan to accelerate your business needs. No hidden fees. Contact our architects for custom enterprise scaling in Chennai and globally.
+                    </span>
+                    <h1 className="font-heading text-5xl md:text-6xl font-extrabold mb-6 text-slate-900 tracking-tight">
+                        Flexible, Transparent Pricing
+                    </h1>
+                    <p className="text-xl text-slate-500 leading-relaxed font-light max-w-2xl mx-auto">
+                        Every plan. Every service. No hidden fees. From a startup's first website to enterprise cloud architecture — we have a plan for you.
                     </p>
                 </div>
             </section>
 
-            {/* Pricing Grid */}
-            <section className="relative z-10 mt-8">
-                <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto items-center">
-                        {plans.map((plan) => (
-                            <div key={plan.name} className={`relative bg-white rounded-[2rem] p-8 lg:p-12 border transition-all duration-300 ${plan.popular ? 'border-primary shadow-2xl ring-4 ring-primary/10 scale-100 md:scale-105 z-10 bg-gradient-to-b from-white to-primary/5 py-12 lg:py-16' : 'border-border shadow-lg hover:shadow-xl hover:-translate-y-1'} flex flex-col h-full`}>
-                                {plan.popular && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                                        <span className="font-heading bg-primary text-primary-foreground text-sm font-extrabold uppercase tracking-widest py-2 px-8 rounded-full shadow-lg">
-                                            {plan.badge}
-                                        </span>
-                                    </div>
-                                )}
-                                {!plan.popular && (
-                                    <div className="mb-4">
-                                        <span className="font-heading text-xs font-bold uppercase tracking-widest text-muted-foreground bg-secondary px-4 py-1.5 rounded-full">
-                                            {plan.badge}
-                                        </span>
-                                    </div>
-                                )}
-
-                                <div className={`mb-8 ${plan.popular ? 'mt-4' : ''}`}>
-                                    <h3 className="font-heading text-3xl font-extrabold mb-4 text-foreground">{plan.name}</h3>
-                                    <p className="text-muted-foreground text-base leading-relaxed h-16">{plan.description}</p>
+            {/* Value props */}
+            <section className="pb-10">
+                <div className="container mx-auto px-4 max-w-4xl">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {valueProps.map((v) => (
+                            <div key={v.label} className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4">
+                                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">{v.icon}</div>
+                                <div>
+                                    <div className="font-heading font-bold text-slate-900 text-sm">{v.label}</div>
+                                    <div className="text-slate-500 text-xs">{v.desc}</div>
                                 </div>
-
-                                <div className="mb-10 pb-10 border-b border-border/60">
-                                    <span className="font-heading text-5xl font-extrabold text-foreground tracking-tight">{plan.price}</span>
-                                    {plan.price !== "Custom" && <span className="text-muted-foreground font-medium text-lg ml-2">/project</span>}
-                                </div>
-
-                                <div className="flex-1 mb-12">
-                                    <h4 className="font-heading font-bold text-foreground mb-6 flex items-center tracking-wide uppercase text-sm">
-                                        <Info className="w-4 h-4 mr-2 text-muted-foreground" /> Included Features
-                                    </h4>
-                                    <ul className="space-y-4">
-                                        {plan.features.map((feature, idx) => (
-                                            <li key={idx} className="flex items-start">
-                                                <div className={`mt-0.5 rounded-full p-1 mr-4 shrink-0 ${plan.popular ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
-                                                    <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                                                </div>
-                                                <span className="text-foreground/90 font-medium">{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <Link href={plan.price === "Custom" ? "https://wa.me/919445675619" : `/checkout?plan=${plan.name.toLowerCase()}`} className="w-full mt-auto block">
-                                    <Button variant={plan.popular ? "default" : "outline"} className={`font-heading w-full font-bold h-16 text-lg rounded-xl ${plan.popular ? 'shadow-xl hover:shadow-primary/30 hover:-translate-y-1 transition-all' : 'border-border hover:bg-muted text-foreground'}`}>
-                                        {plan.price === "Custom" ? "Contact Architecture Team" : "Place Order"}
-                                    </Button>
-                                </Link>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Custom Setup Banner */}
-            <section className="pt-32 relative z-10">
-                <div className="container mx-auto px-4 max-w-4xl text-center">
-                    <div className="bg-gradient-to-r from-background via-secondary to-background p-10 rounded-3xl border border-border">
-                        <h2 className="font-heading text-3xl font-extrabold mb-4 text-foreground tracking-tight">Need a Highly Custom Setup?</h2>
-                        <p className="text-lg text-muted-foreground font-light mb-8 max-w-2xl mx-auto">If your project requires extensive data migration, massive multi-region cloud deployment, or a complex array of n8n automations, let's talk custom pricing.</p>
-                        <Link href="/contact" className="font-heading text-primary font-bold hover:underline underline-offset-4 text-lg">
-                            Reach out to our solutions architect →
-                        </Link>
+            {/* Category sections */}
+            {categories.map((cat) => (
+                <section key={cat.id} id={cat.id} className="py-16 border-t border-slate-100 scroll-mt-20">
+                    <div className="container mx-auto px-4 max-w-6xl">
+                        <div className="mb-10">
+                            <span className={`inline-block text-xs font-extrabold uppercase tracking-widest ${cat.accentText} ${cat.accentBg} px-3 py-1 rounded-full mb-3`}>
+                                {cat.label}
+                            </span>
+                            <h2 className="font-heading text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">{cat.title}</h2>
+                            <p className="text-slate-500 text-base max-w-2xl">{cat.subtitle}</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-start">
+                            {cat.plans.map((plan) => (
+                                <PlanCard key={plan.name} plan={plan} accentBg={cat.accentBg} accentText={cat.accentText} />
+                            ))}
+                        </div>
                     </div>
+                </section>
+            ))}
+
+            {/* Custom CTA */}
+            <section className="py-16 bg-slate-950 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:2.5rem_2.5rem]" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] bg-amber-500/10 rounded-full blur-[80px]" />
+                <div className="container mx-auto px-4 max-w-3xl text-center relative z-10">
+                    <h2 className="font-heading text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
+                        Need a Highly Custom Setup?
+                    </h2>
+                    <p className="text-slate-400 mb-8 font-light max-w-xl mx-auto">
+                        Multi-region cloud deployments, complex automation pipelines, or large-scale company registrations — let's talk custom pricing.
+                    </p>
+                    <Link href="https://wa.me/918300290019" target="_blank" rel="noopener noreferrer">
+                        <Button size="lg" className="font-heading font-extrabold px-10 h-13 bg-amber-500 hover:bg-amber-400 text-white rounded-xl shadow-xl hover:-translate-y-1 transition-all">
+                            Talk to Our Solutions Architect <ArrowRight className="ml-2 w-5 h-5" />
+                        </Button>
+                    </Link>
                 </div>
             </section>
         </div>

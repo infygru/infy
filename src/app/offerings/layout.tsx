@@ -1,7 +1,21 @@
-export const metadata = {
-    title: "IT Services & Enterprise Solutions | Web, Cloud, AI | Infygru",
-    description: "Discover Infygru's comprehensive IT offerings: Enterprise Web Development, n8n Workflow Automation, Secure Cloud Migration, Data Analytics, and specialized ServiceNow architectures in Chennai.",
-    keywords: "IT services company, enterprise web development, cloud migration services, n8n automation experts, data analytics consulting, cybersecurity operations, AI computer vision"
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "All Offerings | IT Services & Business Compliance Solutions | Infygru",
+    description: "Discover Infygru's complete services — web development, n8n automation, cloud migration, DevOps, AI, business registration, GST, trademark, FSSAI, and compliance across India.",
+    keywords: ["IT services India", "business registration services", "web development offerings", "compliance services India", "n8n automation"],
+    alternates: { canonical: "https://infygru.com/offerings" },
+    openGraph: {
+        title: "All Offerings | Enterprise IT & Business Services | Infygru",
+        description: "One company, every solution — cloud, automation, AI, business registration and compliance.",
+        url: "https://infygru.com/offerings",
+        images: [{ url: "https://infygru.com/og-image.png", width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Infygru Offerings | IT & Business Services",
+        description: "Web dev, automation, cloud, business registration and compliance — one company for everything.",
+    },
 };
 
 export default function OfferingsLayout({

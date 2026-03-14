@@ -134,5 +134,38 @@ export const servicesData = [
             "Visual Analytics"
         ],
         benefits: ["Automated Inspections", "High Accuracy Rates", "Reduced Labor Costs"]
+    },
+    {
+        slug: "business-registration",
+        title: "Business Registration & Licensing",
+        description: "Comprehensive registration and licensing services including Company Incorporation, Trademark Registration, GST, and more.",
+        longDescription: "We provide end-to-end support for all your business registration and licensing needs. From company incorporation to securing vital certifications like MSME, FSSAI, and IEC, our experts ensure complete adherence to legal standards, so you can focus on building your enterprise.",
+        iconName: "Building2",
+        seoKeywords: ["company incorporation", "trademark registration", "GST registration", "MSME registration", "FSSAI license", "IEC registration", "APEDA registration"],
+        features: [
+            "Company Incorporation",
+            "Trademark Registration",
+            "GST Registration & Filing",
+            "Udyam (MSME) Registration",
+            "FSSAI (Food License)",
+            "Import Export Code (IEC)",
+            "APEDA Registration",
+            "Barcode Registration"
+        ],
+        benefits: ["Legal Compliance", "Brand Protection", "Market Expansion"]
+    },
+    {
+        slug: "compliance-taxation",
+        title: "Compliance & Taxation",
+        description: "Expert auditing, compliance, tax filing, and certification services to keep your business fully compliant and financially healthy.",
+        longDescription: "Navigate complex tax and compliance frameworks seamlessly with our expert services. We handle everything from routine Auditing & Compliance reports to timely ITR Filings. We also assist in securing mandatory industry-specific standards such as IATF Certification to optimize operations and trust.",
+        iconName: "Briefcase",
+        seoKeywords: ["auditing compliance", "ITR filing experts", "IATF certification", "taxation services", "business compliance consulting"],
+        features: [
+            "Auditing & Compliance",
+            "ITR Filing",
+            "IATF Certification"
+        ],
+        benefits: ["Penalty Avoidance", "Financial Transparency", "Industry Certification"]
     }
 ];

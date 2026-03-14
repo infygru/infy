@@ -1,14 +1,70 @@
 import { CheckCircle2, Users, Trophy, Target, Globe, Server, Code, Zap, Shield, Bot } from "lucide-react";
+import { JsonLd } from "@/components/JsonLd";
+import type { Metadata } from "next";
 
-export const metadata = {
-    title: "About Us | Leading IT Consulting & Web Development in Chennai | Infygru",
-    description: "Infygru is a powerhouse IT solutions firm in Chennai. We specialize in enterprise web development, Next.js architecture, n8n automation, and AI cloud technologies.",
-    keywords: "IT consulting firm Chennai, enterprise web development, global DevOps services, n8n automation experts India, digital transformation"
+export const metadata: Metadata = {
+    title: "About Infygru | Enterprise IT Consulting & Digital Transformation — Chennai",
+    description: "Infygru is Chennai's premier IT solutions firm. We specialize in enterprise web development (Next.js), n8n automation, cloud migration, AI, DevOps, and full business registration services across India.",
+    keywords: ["IT consulting firm Chennai", "enterprise web development India", "DevOps services India", "n8n automation experts", "digital transformation company Chennai"],
+    alternates: { canonical: "https://infygru.com/about" },
+    openGraph: {
+        title: "About Infygru | Enterprise IT Consulting — Chennai, India",
+        description: "Meet the team behind India's fastest-growing enterprise IT and business compliance company. Based in Chennai, serving pan-India.",
+        url: "https://infygru.com/about",
+        images: [{ url: "https://infygru.com/og-image.png", width: 1200, height: 630 }],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "About Infygru | Enterprise IT Consulting — Chennai",
+        description: "Chennai's premier IT solutions firm. Web development, automation, cloud, AI, and business compliance.",
+    },
+};
+
+const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+        {
+            "@type": "Question",
+            name: "Where is Infygru located?",
+            acceptedAnswer: {
+                "@type": "Answer",
+                text: "We are headquartered in Chennai, India, but we serve enterprise clients globally across different timezones.",
+            },
+        },
+        {
+            "@type": "Question",
+            name: "What industries do you work with?",
+            acceptedAnswer: {
+                "@type": "Answer",
+                text: "We work with a wide range of industries including finance, healthcare, e-commerce, and manufacturing, providing tailored digital transformation solutions.",
+            },
+        },
+        {
+            "@type": "Question",
+            name: "Do you provide ongoing support after project completion?",
+            acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes, we offer continuous support and maintenance SLAs to ensure your systems run smoothly with 99.9% uptime.",
+            },
+        },
+    ],
+};
+
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://infygru.com" },
+        { "@type": "ListItem", position: 2, name: "About", item: "https://infygru.com/about" },
+    ],
 };
 
 export default function About() {
     return (
         <div className="min-h-screen bg-background pb-32 relative font-sans">
+            <JsonLd data={faqSchema} />
+            <JsonLd data={breadcrumbSchema} />
             {/* Subtle top ambient glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
 

@@ -1,36 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useState, useRef } from "react";
 import { Button } from "@/components/ui/Button";
-import { ArrowLeft, CheckCircle2, Shield, Zap, Lock, CreditCard, HelpCircle, ArrowRight } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Shield, Zap, Lock, HelpCircle, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
-
-function RazorpayButton({ buttonId }: { buttonId: string }) {
-    const formRef = useRef<HTMLFormElement>(null);
-
-    useEffect(() => {
-        if (!formRef.current || !buttonId) return;
-
-        // Prevent duplicate scripts in React Strict Mode
-        if (formRef.current.querySelector('script')) return;
-
-        const script = document.createElement("script");
-        script.src = "https://checkout.razorpay.com/v1/payment-button.js";
-        script.async = true;
-        // The ID provided by the user
-        script.setAttribute("data-payment_button_id", buttonId);
-        formRef.current.appendChild(script);
-
-        return () => {
-            if (formRef.current) {
-                formRef.current.innerHTML = '';
-            }
-        }
-    }, [buttonId]);
-
-    return <form ref={formRef} className="w-full flex justify-center mt-2"></form>;
-}
 
 function CheckoutForm() {
     const searchParams = useSearchParams();
@@ -38,7 +12,111 @@ function CheckoutForm() {
 
     const price = planName === 'starter' ? '₹14,999' : planName === 'professional' ? '₹49,999' : 'Custom';
 
-    const buttonId = planName === 'starter' ? 'pl_SOnu3LSi98jOMH' : planName === 'professional' ? 'pl_SOo4Pv2sm3yynh' : '';
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    const handlePayment = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        setErrorMsg(null);
+
+        if (price === 'Custom') {
+            setErrorMsg("Please contact us for custom enterprise payments.");
+            setLoading(false);
+            return;
+        }
+
+        const formData = new FormData(e.currentTarget);
+        const customerInfo = {
+            firstName: formData.get("firstName") as string,
+            lastName: formData.get("lastName") as string,
+            email: formData.get("email") as string,
+            phone: formData.get("phone") as string,
+            company: formData.get("company") as string,
+            jobTitle: formData.get("jobTitle") as string,
+            projectDescription: formData.get("projectDescription") as string,
+        };
+
+        try {
+            // 1. Initiate transaction
+            const response = await fetch("/api/paytm/initiate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan: planName, customerInfo }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to initiate payment");
+            }
+
+            const { txnToken, orderId, amount, mid } = data;
+
+            // 2. Load Paytm JS Checkout script dynamically
+            const scriptUrl = `https://securegw.paytm.in/merchantpgpui/checkoutjs/merchants/${mid}.js`;
+
+            const loadScript = () => {
+                return new Promise((resolve, reject) => {
+                    if (document.querySelector(`script[src="${scriptUrl}"]`)) {
+                        resolve(true);
+                        return;
+                    }
+                    const script = document.createElement("script");
+                    script.src = scriptUrl;
+                    script.onload = () => resolve(true);
+                    script.onerror = () => reject(new Error("Failed to load payment gateway"));
+                    document.body.appendChild(script);
+                });
+            };
+
+            await loadScript();
+
+            // 3. Invoke Paytm Checkout
+            const paytm = (window as any).Paytm;
+            if (paytm && paytm.CheckoutJS) {
+                const config = {
+                    root: "",
+                    flow: "DEFAULT",
+                    data: {
+                        orderId: orderId,
+                        token: txnToken,
+                        tokenType: "TXN_TOKEN",
+                        amount: amount,
+                    },
+                    handler: {
+                        notifyMerchant: function (eventName: string, data: any) {
+                            console.log("notifyMerchant eventName => ", eventName);
+                        },
+                        transactionStatus: function (data: any) {
+                            console.log("payment status => ", data);
+                            if (data.STATUS === "TXN_SUCCESS") {
+                                alert("Payment successful!");
+                                // Optionally redirect here
+                            } else {
+                                alert("Payment failed: " + data.RESPMSG);
+                            }
+                            paytm.CheckoutJS.close();
+                        }
+                    },
+                };
+
+                paytm.CheckoutJS.init(config).then(function onSuccess() {
+                    paytm.CheckoutJS.invoke();
+                }).catch(function onError(error: any) {
+                    console.error("Paytm init error => ", error);
+                    setErrorMsg("Failed to initialize payment gateway.");
+                });
+            } else {
+                setErrorMsg("Payment gateway is not available.");
+            }
+
+        } catch (err: any) {
+            setErrorMsg(err.message || "Something went wrong.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="font-sans">
@@ -107,7 +185,7 @@ function CheckoutForm() {
 
                 {/* Right Column: Light Theme Form */}
                 <div className="lg:w-[55%] bg-slate-50 p-8 lg:p-16 xl:p-24 flex flex-col justify-center relative">
-                    <div className="max-w-xl mx-auto w-full bg-white p-10 md:p-14 rounded-[2.5rem] shadow-xl border border-border">
+                    <form onSubmit={handlePayment} className="max-w-xl mx-auto w-full bg-white p-10 md:p-14 rounded-[2.5rem] shadow-xl border border-border">
                         <div className="flex items-center justify-between mb-10 pb-6 border-b border-border">
                             <h2 className="font-heading text-3xl font-extrabold text-foreground tracking-tight">Authorization</h2>
                             <div className="flex items-center gap-2 text-primary font-bold">
@@ -115,42 +193,47 @@ function CheckoutForm() {
                             </div>
                         </div>
                         <div className="space-y-6">
+                            {errorMsg && (
+                                <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium">
+                                    {errorMsg}
+                                </div>
+                            )}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-foreground font-heading">First Name</label>
-                                    <input required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
+                                    <input name="firstName" required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-foreground font-heading">Last Name</label>
-                                    <input required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
+                                    <input name="lastName" required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-foreground font-heading">Business Email</label>
-                                    <input required type="email" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
+                                    <input name="email" required type="email" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-foreground font-heading">Phone Number</label>
-                                    <input required type="tel" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
+                                    <input name="phone" required type="tel" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-foreground font-heading">Company Name</label>
-                                    <input required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
+                                    <input name="company" required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-foreground font-heading">Job Title</label>
-                                    <input required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
+                                    <input name="jobTitle" required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-foreground font-heading">Project Description</label>
-                                <textarea required rows={3} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground resize-none"></textarea>
+                                <textarea name="projectDescription" required rows={3} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground resize-none"></textarea>
                             </div>
 
                             <div className="pt-8 mb-4 border-t border-border mt-4">
@@ -160,8 +243,10 @@ function CheckoutForm() {
                                         <span className="flex items-center gap-2 text-primary lowercase"><Shield className="w-3 h-3" /> 256-bit ssl securely hosted</span>
                                     </label>
                                     <div className="bg-secondary/30 p-6 md:p-8 rounded-2xl border border-border border-dashed flex flex-col items-center justify-center min-h-[120px]">
-                                        {buttonId ? (
-                                            <RazorpayButton buttonId={buttonId} />
+                                        {price !== 'Custom' ? (
+                                            <Button type="submit" disabled={loading} className="w-full h-14 rounded-xl text-lg font-bold font-heading shadow-[0_0_40px_-10px_rgba(var(--primary),0.5)] hover:shadow-[0_0_60px_-15px_rgba(var(--primary),0.6)] transition-all">
+                                                {loading ? <><Loader2 className="w-5 h-5 mr-3 animate-spin"/> Processing Securely...</> : `Complete Selected Plan (${price})`}
+                                            </Button>
                                         ) : (
                                             <p className="text-sm text-muted-foreground font-light text-center">Contact us to process custom enterprise payments.</p>
                                         )}
@@ -173,7 +258,7 @@ function CheckoutForm() {
                                 By clicking the payment button above, you authorize the charge and agree to Infygru's Terms of Service and Privacy Policy. All sales final.
                             </p>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
 

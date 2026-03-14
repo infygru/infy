@@ -1,12 +1,49 @@
 "use client";
 
-import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Mail, Phone, MapPin, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { submitLead } from "@/lib/directus";
 
 export default function Contact() {
+    const [submitting, setSubmitting] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState("");
+
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        service: "Web Development",
+        message: ""
+    });
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSubmitting(true);
+        setError("");
+
+        try {
+            await submitLead({
+                name: `${formData.firstName} ${formData.lastName}`.trim(),
+                email: formData.email,
+                phone: formData.phone,
+                service_interest: formData.service,
+                message: formData.message,
+                source: "Website Contact Form"
+            });
+            setSuccess(true);
+            setFormData({ firstName: "", lastName: "", email: "", phone: "", service: "Web Development", message: "" });
+        } catch (err: any) {
+            setError(err.message || "Something went wrong. Please try again.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-background pb-32 relative">
-            {/* Subtle top ambient glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
 
             <section className="pt-28 pb-16 lg:pt-36 relative z-10 text-center">
@@ -74,55 +111,76 @@ export default function Contact() {
 
                     {/* Contact Form */}
                     <div className="lg:col-span-3">
-                        <div className="bg-white p-10 md:p-14 rounded-[2.5rem] border border-border shadow-2xl">
-                            <div className="mb-10">
+                        <div className="bg-white p-10 md:p-14 rounded-[2.5rem] border border-border shadow-2xl relative overflow-hidden">
+                            <div className="mb-10 relative z-10">
                                 <h2 className="text-3xl font-extrabold mb-4 text-foreground tracking-tight">Send a Message</h2>
                                 <p className="text-lg text-muted-foreground font-light">
                                     Fill out the form below. Our team will get back to you shortly.
                                 </p>
                             </div>
 
-                            <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); alert("Message sent successfully. Thank you."); }}>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div>
-                                        <label className="text-sm font-bold mb-3 block text-foreground uppercase tracking-wider">First Name</label>
-                                        <input required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 text-foreground shadow-inner" />
+                            {success ? (
+                                <div className="relative z-10 text-center py-16 bg-green-50 rounded-2xl border border-green-100 flex flex-col items-center">
+                                    <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6">
+                                        <CheckCircle2 className="w-8 h-8 text-green-500" />
                                     </div>
-                                    <div>
-                                        <label className="text-sm font-bold mb-3 block text-foreground uppercase tracking-wider">Last Name</label>
-                                        <input required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 text-foreground shadow-inner" />
+                                    <h3 className="text-2xl font-bold text-green-900 mb-2">Message Sent!</h3>
+                                    <p className="text-green-700 font-light">Thank you for reaching out. We'll be in touch soon.</p>
+                                    <Button className="mt-8 bg-green-600 hover:bg-green-700" onClick={() => setSuccess(false)}>Send Another</Button>
+                                </div>
+                            ) : (
+                                <form className="space-y-6 relative z-10" onSubmit={handleSubmit}>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="text-sm font-bold mb-2 block text-foreground uppercase tracking-wider">First Name</label>
+                                            <input required type="text" value={formData.firstName} onChange={(e) => setFormData(p => ({...p, firstName: e.target.value}))} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 text-foreground shadow-inner" />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-bold mb-2 block text-foreground uppercase tracking-wider">Last Name</label>
+                                            <input required type="text" value={formData.lastName} onChange={(e) => setFormData(p => ({...p, lastName: e.target.value}))} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 text-foreground shadow-inner" />
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div>
-                                    <label className="text-sm font-bold mb-3 block text-foreground uppercase tracking-wider">Work Email</label>
-                                    <input required type="email" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 text-foreground shadow-inner" />
-                                </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="text-sm font-bold mb-2 block text-foreground uppercase tracking-wider">Work Email</label>
+                                            <input required type="email" value={formData.email} onChange={(e) => setFormData(p => ({...p, email: e.target.value}))} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 text-foreground shadow-inner" />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-bold mb-2 block text-foreground uppercase tracking-wider">Phone</label>
+                                            <input type="tel" value={formData.phone} onChange={(e) => setFormData(p => ({...p, phone: e.target.value}))} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 text-foreground shadow-inner" />
+                                        </div>
+                                    </div>
 
-                                <div>
-                                    <label className="text-sm font-bold mb-3 block text-foreground uppercase tracking-wider">Service Required</label>
-                                    <select className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 appearance-none text-foreground shadow-inner">
-                                        <option>Web Development</option>
-                                        <option>n8n Automation</option>
-                                        <option>Cloud Migration</option>
-                                        <option>Data Analytics</option>
-                                        <option>IT Consulting</option>
-                                    </select>
-                                </div>
+                                    <div>
+                                        <label className="text-sm font-bold mb-2 block text-foreground uppercase tracking-wider">Service Required</label>
+                                        <select value={formData.service} onChange={(e) => setFormData(p => ({...p, service: e.target.value}))} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 appearance-none text-foreground shadow-inner">
+                                            <option>Business Registration</option>
+                                            <option>Compliance & Taxation</option>
+                                            <option>Web Development</option>
+                                            <option>n8n Automation</option>
+                                            <option>Cloud Migration</option>
+                                            <option>Security Operations</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
 
-                                <div>
-                                    <label className="text-sm font-bold mb-3 block text-foreground uppercase tracking-wider">Message</label>
-                                    <textarea required rows={5} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 resize-none text-foreground shadow-inner"></textarea>
-                                </div>
+                                    <div>
+                                        <label className="text-sm font-bold mb-2 block text-foreground uppercase tracking-wider">Message</label>
+                                        <textarea required rows={5} value={formData.message} onChange={(e) => setFormData(p => ({...p, message: e.target.value}))} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:ring-2 focus:ring-primary/50 outline-none transition-all duration-200 resize-none text-foreground shadow-inner"></textarea>
+                                    </div>
 
-                                <Button type="submit" size="lg" className="w-full font-extrabold h-16 text-lg mt-6 shadow-xl hover:shadow-primary/30 transition-all flex items-center justify-center rounded-xl bg-primary text-white hover:bg-primary/90">
-                                    Send Message <ArrowRight className="ml-3 w-6 h-6" />
-                                </Button>
-                                <div className="flex items-center justify-center gap-2 mt-6 opacity-60">
-                                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                                    <p className="text-xs font-bold text-foreground tracking-widest uppercase">We respect your privacy</p>
-                                </div>
-                            </form>
+                                    {error && <div className="text-red-500 text-sm font-bold bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}
+
+                                    <Button type="submit" disabled={submitting} size="lg" className="w-full font-extrabold h-16 text-lg mt-6 shadow-xl hover:shadow-primary/30 transition-all flex items-center justify-center rounded-xl bg-primary text-white hover:bg-primary/90 disabled:opacity-70">
+                                        {submitting ? <><Loader2 className="w-6 h-6 mr-3 animate-spin" /> Submitting...</> : <>Send Message <ArrowRight className="ml-3 w-6 h-6" /></>}
+                                    </Button>
+                                    <div className="flex items-center justify-center gap-2 mt-6 opacity-60">
+                                        <div className="w-2 h-2 rounded-full bg-green-500" />
+                                        <p className="text-xs font-bold text-foreground tracking-widest uppercase">We respect your privacy</p>
+                                    </div>
+                                </form>
+                            )}
                         </div>
                     </div>
 
