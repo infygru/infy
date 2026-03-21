@@ -135,8 +135,8 @@ const categories: PricingCategory[] = [
                     "Email Support",
                     "7-Day Turnaround",
                 ],
-                cta: "Get Started",
-                ctaLink: "/contact",
+                cta: "Pay & Get Started",
+                ctaLink: "/checkout?plan=biz-basic",
             },
             {
                 name: "Growth",
@@ -154,8 +154,8 @@ const categories: PricingCategory[] = [
                     "Dedicated Compliance Expert",
                 ],
                 popular: true,
-                cta: "Get Started",
-                ctaLink: "/contact",
+                cta: "Pay & Get Started",
+                ctaLink: "/checkout?plan=biz-growth",
             },
             {
                 name: "Full Compliance",
@@ -200,8 +200,8 @@ const categories: PricingCategory[] = [
                     "Refund Tracking",
                     "Email & WhatsApp Support",
                 ],
-                cta: "File Now",
-                ctaLink: "/contact",
+                cta: "Pay & File Now",
+                ctaLink: "/checkout?plan=tax-individual",
             },
             {
                 name: "Business",
@@ -219,8 +219,8 @@ const categories: PricingCategory[] = [
                     "Quarterly Review Calls",
                 ],
                 popular: true,
-                cta: "Get Started",
-                ctaLink: "/contact",
+                cta: "Pay & Get Started",
+                ctaLink: "/checkout?plan=tax-business",
             },
             {
                 name: "Enterprise Audit",

@@ -1,16 +1,78 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState, useRef } from "react";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft, CheckCircle2, Shield, Zap, Lock, HelpCircle, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 
+type PlanMeta = {
+    label: string;
+    price: string;
+    priceNote: string;
+    description: string;
+    isCustom: boolean;
+};
+
+const PLANS: Record<string, PlanMeta> = {
+    // IT & Cloud Services
+    starter: {
+        label: "Starter",
+        price: "₹14,999",
+        priceNote: "/project",
+        description: "Custom website (up to 5 pages), basic SEO, mobile-first design, and 1-month support.",
+        isCustom: false,
+    },
+    professional: {
+        label: "Professional",
+        price: "₹49,999",
+        priceNote: "/project",
+        description: "Advanced web app (Next.js/React), CMS, n8n automation, comprehensive SEO, and 3-month priority support.",
+        isCustom: false,
+    },
+    // Business Registration & Licensing
+    "biz-basic": {
+        label: "Business Basic",
+        price: "₹2,499",
+        priceNote: "/registration",
+        description: "Any one registration service with document collection, government filing, and email support.",
+        isCustom: false,
+    },
+    "biz-growth": {
+        label: "Business Growth",
+        price: "₹7,999",
+        priceNote: "/bundle",
+        description: "Company incorporation, GST registration, MSME, trademark, and DSC — complete startup bundle.",
+        isCustom: false,
+    },
+    // Compliance & Taxation
+    "tax-individual": {
+        label: "Individual Tax",
+        price: "₹999",
+        priceNote: "/year",
+        description: "ITR-1/ITR-2 filing, income tax computation, TDS reconciliation, and refund tracking.",
+        isCustom: false,
+    },
+    "tax-business": {
+        label: "Business Tax",
+        price: "₹4,999",
+        priceNote: "/year",
+        description: "Business ITR filing, monthly GST returns, TDS/TCS filing, and dedicated CA support.",
+        isCustom: false,
+    },
+};
+
 function CheckoutForm() {
     const searchParams = useSearchParams();
-    const planName = searchParams.get("plan") || "starter";
+    const planKey = searchParams.get("plan") || "starter";
 
-    const price = planName === 'starter' ? '₹14,999' : planName === 'professional' ? '₹49,999' : 'Custom';
+    const plan: PlanMeta = PLANS[planKey] ?? {
+        label: planKey,
+        price: "Custom",
+        priceNote: "",
+        description: "Contact us for custom enterprise pricing.",
+        isCustom: true,
+    };
 
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -20,7 +82,7 @@ function CheckoutForm() {
         setLoading(true);
         setErrorMsg(null);
 
-        if (price === 'Custom') {
+        if (plan.isCustom) {
             setErrorMsg("Please contact us for custom enterprise payments.");
             setLoading(false);
             return;
@@ -38,11 +100,10 @@ function CheckoutForm() {
         };
 
         try {
-            // 1. Initiate transaction
             const response = await fetch("/api/paytm/initiate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plan: planName, customerInfo }),
+                body: JSON.stringify({ plan: planKey, customerInfo }),
             });
 
             const data = await response.json();
@@ -53,67 +114,73 @@ function CheckoutForm() {
 
             const { txnToken, orderId, amount, mid } = data;
 
-            // 2. Load Paytm JS Checkout script dynamically
+            // Load Paytm JS SDK
             const scriptUrl = `https://securegw.paytm.in/merchantpgpui/checkoutjs/merchants/${mid}.js`;
+            await new Promise<void>((resolve, reject) => {
+                if (document.querySelector(`script[src="${scriptUrl}"]`)) {
+                    resolve();
+                    return;
+                }
+                const script = document.createElement("script");
+                script.src = scriptUrl;
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error("Failed to load payment gateway"));
+                document.body.appendChild(script);
+            });
 
-            const loadScript = () => {
-                return new Promise((resolve, reject) => {
-                    if (document.querySelector(`script[src="${scriptUrl}"]`)) {
-                        resolve(true);
-                        return;
-                    }
-                    const script = document.createElement("script");
-                    script.src = scriptUrl;
-                    script.onload = () => resolve(true);
-                    script.onerror = () => reject(new Error("Failed to load payment gateway"));
-                    document.body.appendChild(script);
-                });
-            };
-
-            await loadScript();
-
-            // 3. Invoke Paytm Checkout
             const paytm = (window as any).Paytm;
-            if (paytm && paytm.CheckoutJS) {
-                const config = {
-                    root: "",
-                    flow: "DEFAULT",
-                    data: {
-                        orderId: orderId,
-                        token: txnToken,
-                        tokenType: "TXN_TOKEN",
-                        amount: amount,
-                    },
-                    handler: {
-                        notifyMerchant: function (eventName: string, data: any) {
-                            console.log("notifyMerchant eventName => ", eventName);
-                        },
-                        transactionStatus: function (data: any) {
-                            console.log("payment status => ", data);
-                            if (data.STATUS === "TXN_SUCCESS") {
-                                alert("Payment successful!");
-                                // Optionally redirect here
-                            } else {
-                                alert("Payment failed: " + data.RESPMSG);
-                            }
-                            paytm.CheckoutJS.close();
+            if (!paytm?.CheckoutJS) {
+                throw new Error("Payment gateway is not available.");
+            }
+
+            const config = {
+                root: "",
+                flow: "DEFAULT",
+                data: {
+                    orderId,
+                    token: txnToken,
+                    tokenType: "TXN_TOKEN",
+                    amount,
+                },
+                handler: {
+                    notifyMerchant: function (eventName: string) {
+                        console.log("Paytm event:", eventName);
+                        if (eventName === "SESSION_EXPIRED") {
+                            setErrorMsg("Session expired. Please try again.");
+                            setLoading(false);
                         }
                     },
-                };
+                    transactionStatus: function (txnData: any) {
+                        console.log("Paytm txn status:", txnData);
+                        paytm.CheckoutJS.close();
+                        if (txnData.STATUS === "TXN_SUCCESS") {
+                            const params = new URLSearchParams({
+                                orderId: txnData.ORDERID || orderId,
+                                txnId: txnData.TXNID || "",
+                                amount: txnData.TXNAMOUNT || amount,
+                            });
+                            window.location.href = `/payment-success?${params.toString()}`;
+                        } else {
+                            const params = new URLSearchParams({
+                                orderId: txnData.ORDERID || orderId,
+                                msg: txnData.RESPMSG || "Payment was not completed.",
+                            });
+                            window.location.href = `/payment-failed?${params.toString()}`;
+                        }
+                    },
+                },
+            };
 
-                paytm.CheckoutJS.init(config).then(function onSuccess() {
-                    paytm.CheckoutJS.invoke();
-                }).catch(function onError(error: any) {
-                    console.error("Paytm init error => ", error);
-                    setErrorMsg("Failed to initialize payment gateway.");
+            paytm.CheckoutJS.init(config)
+                .then(() => paytm.CheckoutJS.invoke())
+                .catch((err: any) => {
+                    console.error("Paytm init error:", err);
+                    setErrorMsg("Failed to initialize payment gateway. Please try again.");
+                    setLoading(false);
                 });
-            } else {
-                setErrorMsg("Payment gateway is not available.");
-            }
 
         } catch (err: any) {
             setErrorMsg(err.message || "Something went wrong.");
-        } finally {
             setLoading(false);
         }
     };
@@ -121,7 +188,7 @@ function CheckoutForm() {
     return (
         <div className="font-sans">
             <div className="flex flex-col lg:flex-row w-full bg-white">
-                {/* Left Column: Summary & Timeline */}
+                {/* Left Column: Summary */}
                 <div className="lg:w-[45%] bg-slate-50 p-8 lg:p-16 xl:p-24 flex flex-col relative overflow-hidden xl:min-h-screen border-r border-border">
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
 
@@ -135,20 +202,22 @@ function CheckoutForm() {
                                 Secure Order
                             </div>
                             <h1 className="font-heading text-4xl lg:text-5xl font-extrabold text-foreground mb-4 tracking-tight">
-                                <span className="capitalize">{planName}</span> Plan
+                                {plan.label}
                             </h1>
                             <div className="flex items-end gap-3 mb-6">
-                                <span className="font-heading text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight">{price}</span>
-                                {price !== 'Custom' && <span className="text-muted-foreground font-light text-lg pb-2">/ project</span>}
+                                <span className="font-heading text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight">{plan.price}</span>
+                                {plan.priceNote && (
+                                    <span className="text-muted-foreground font-light text-lg pb-2">{plan.priceNote}</span>
+                                )}
                             </div>
                             <p className="text-muted-foreground font-light text-lg leading-relaxed">
-                                Full digital transformation, bespoke web architecture, and global scalability delivered fast.
+                                {plan.description}
                             </p>
                         </div>
 
                         <div className="space-y-8 mt-12 pb-12">
                             <div className="pt-8 border-t border-border">
-                                <h3 className="font-heading font-bold text-foreground mb-6 text-xl">Project Timeline & Execution</h3>
+                                <h3 className="font-heading font-bold text-foreground mb-6 text-xl">What happens next?</h3>
 
                                 <div className="space-y-8">
                                     <div className="flex gap-4">
@@ -156,12 +225,10 @@ function CheckoutForm() {
                                             <Zap className="w-5 h-5 text-accent" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-foreground mb-2 text-lg">Guaranteed 30-Day Delivery</h4>
-                                            <ul className="text-muted-foreground text-sm font-light leading-relaxed space-y-2">
-                                                <li className="flex gap-2 items-start"><span className="text-primary mt-1">•</span> <strong>Day 1-3 (Discovery):</strong> Requirements mapping, asset handoff, and architecture blueprinting.</li>
-                                                <li className="flex gap-2 items-start"><span className="text-primary mt-1">•</span> <strong>Day 4-15 (Engineering):</strong> Core frontend development, API routing, and backend database structuring.</li>
-                                                <li className="flex gap-2 items-start"><span className="text-primary mt-1">•</span> <strong>Day 16-30 (Launch):</strong> QA testing across 14+ devices, final client review, SEO injection, and live deployment.</li>
-                                            </ul>
+                                            <h4 className="font-bold text-foreground mb-2 text-lg">Instant Confirmation</h4>
+                                            <p className="text-muted-foreground text-sm font-light leading-relaxed">
+                                                You will receive a confirmation email immediately after payment. Our team will contact you within 24 hours to begin onboarding.
+                                            </p>
                                         </div>
                                     </div>
 
@@ -170,11 +237,10 @@ function CheckoutForm() {
                                             <CheckCircle2 className="w-5 h-5 text-primary" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-foreground mb-2 text-lg">Zero Downtime Migration</h4>
-                                            <ul className="text-muted-foreground text-sm font-light leading-relaxed space-y-2">
-                                                <li className="flex gap-2 items-start"><span className="text-primary mt-1">•</span> Seamless cutover of legacy systems to modern Next.js/React infrastructure.</li>
-                                                <li className="flex gap-2 items-start"><span className="text-primary mt-1">•</span> Automatic 301 redirection maps to preserve existing SEO authority.</li>
-                                            </ul>
+                                            <h4 className="font-bold text-foreground mb-2 text-lg">Dedicated Expert Assigned</h4>
+                                            <p className="text-muted-foreground text-sm font-light leading-relaxed">
+                                                A dedicated account manager or expert is assigned to your project from Day 1, ensuring seamless delivery.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -183,11 +249,11 @@ function CheckoutForm() {
                     </div>
                 </div>
 
-                {/* Right Column: Light Theme Form */}
+                {/* Right Column: Form */}
                 <div className="lg:w-[55%] bg-slate-50 p-8 lg:p-16 xl:p-24 flex flex-col justify-center relative">
                     <form onSubmit={handlePayment} className="max-w-xl mx-auto w-full bg-white p-10 md:p-14 rounded-[2.5rem] shadow-xl border border-border">
                         <div className="flex items-center justify-between mb-10 pb-6 border-b border-border">
-                            <h2 className="font-heading text-3xl font-extrabold text-foreground tracking-tight">Authorization</h2>
+                            <h2 className="font-heading text-3xl font-extrabold text-foreground tracking-tight">Your Details</h2>
                             <div className="flex items-center gap-2 text-primary font-bold">
                                 <Lock className="w-6 h-6" />
                             </div>
@@ -211,7 +277,7 @@ function CheckoutForm() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-foreground font-heading">Business Email</label>
+                                    <label className="text-sm font-bold text-foreground font-heading">Email</label>
                                     <input name="email" required type="email" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                                 <div className="space-y-2">
@@ -223,29 +289,32 @@ function CheckoutForm() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-foreground font-heading">Company Name</label>
-                                    <input name="company" required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
+                                    <input name="company" type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-foreground font-heading">Job Title</label>
-                                    <input name="jobTitle" required type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
+                                    <input name="jobTitle" type="text" className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground" />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-foreground font-heading">Project Description</label>
-                                <textarea name="projectDescription" required rows={3} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground resize-none"></textarea>
+                                <label className="text-sm font-bold text-foreground font-heading">Description / Requirements</label>
+                                <textarea name="projectDescription" rows={3} className="w-full p-4 rounded-xl border border-border bg-secondary/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium text-foreground resize-none"></textarea>
                             </div>
 
                             <div className="pt-8 mb-4 border-t border-border mt-4">
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-muted-foreground font-heading tracking-widest uppercase flex items-center justify-between mb-4">
                                         <span>Payment Processing</span>
-                                        <span className="flex items-center gap-2 text-primary lowercase"><Shield className="w-3 h-3" /> 256-bit ssl securely hosted</span>
+                                        <span className="flex items-center gap-2 text-primary lowercase"><Shield className="w-3 h-3" /> 256-bit SSL</span>
                                     </label>
                                     <div className="bg-secondary/30 p-6 md:p-8 rounded-2xl border border-border border-dashed flex flex-col items-center justify-center min-h-[120px]">
-                                        {price !== 'Custom' ? (
+                                        {!plan.isCustom ? (
                                             <Button type="submit" disabled={loading} className="w-full h-14 rounded-xl text-lg font-bold font-heading shadow-[0_0_40px_-10px_rgba(var(--primary),0.5)] hover:shadow-[0_0_60px_-15px_rgba(var(--primary),0.6)] transition-all">
-                                                {loading ? <><Loader2 className="w-5 h-5 mr-3 animate-spin"/> Processing Securely...</> : `Complete Selected Plan (${price})`}
+                                                {loading
+                                                    ? <><Loader2 className="w-5 h-5 mr-3 animate-spin" /> Processing Securely...</>
+                                                    : `Pay ${plan.price} Securely`
+                                                }
                                             </Button>
                                         ) : (
                                             <p className="text-sm text-muted-foreground font-light text-center">Contact us to process custom enterprise payments.</p>
@@ -255,14 +324,16 @@ function CheckoutForm() {
                             </div>
 
                             <p className="text-center text-xs font-light text-muted-foreground mt-6 leading-relaxed">
-                                By clicking the payment button above, you authorize the charge and agree to Infygru's Terms of Service and Privacy Policy. All sales final.
+                                By clicking the payment button, you authorize the charge and agree to Infygru&apos;s{" "}
+                                <Link href="/legal/terms" className="underline">Terms of Service</Link> and{" "}
+                                <Link href="/legal/privacy" className="underline">Privacy Policy</Link>.
                             </p>
                         </div>
                     </form>
                 </div>
             </div>
 
-            {/* NEW SECTION: Enterprise Assurance & FAQ below Checkout */}
+            {/* Assurance & FAQ */}
             <div className="bg-white py-24 border-t border-border">
                 <div className="container mx-auto px-4 max-w-6xl">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
@@ -274,7 +345,7 @@ function CheckoutForm() {
                                 Enterprise Assurance.
                             </h2>
                             <p className="text-lg text-muted-foreground font-light leading-relaxed mb-8">
-                                We engineer solutions that run mission-critical infrastructure. To guarantee your success, we have established a strict enterprise assurance protocol that covers everything from post-launch architecture support to code handover.
+                                We engineer solutions that run mission-critical infrastructure. Our enterprise assurance protocol covers post-launch support, code handover, and full IP transfer.
                             </p>
 
                             <ul className="space-y-4">
@@ -288,13 +359,13 @@ function CheckoutForm() {
                                 </li>
                                 <li className="flex items-center gap-3">
                                     <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
-                                    <span className="text-foreground font-medium">Included 24/7 technical support post-launch.</span>
+                                    <span className="text-foreground font-medium">24/7 technical support included post-launch.</span>
                                 </li>
                             </ul>
 
                             <Link href="/contact" className="inline-flex mt-10 w-full sm:w-auto">
                                 <Button variant="outline" className="w-full sm:w-auto h-14 px-8 font-bold font-heading border-border text-foreground hover:bg-muted group">
-                                    Talk to an Architect <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                    Talk to an Expert <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>
@@ -307,19 +378,19 @@ function CheckoutForm() {
                                 <div className="pb-6 border-b border-border">
                                     <h4 className="font-bold text-foreground mb-2">What happens immediately after payment?</h4>
                                     <p className="text-muted-foreground text-sm font-light leading-relaxed">
-                                        You will be redirected to an encrypted onboarding dashboard where you can securely upload your brand assets and schedule your Day-1 architecture kickoff call.
+                                        You will receive an order confirmation. Our team will contact you within 24 hours to schedule your onboarding call and begin work.
                                     </p>
                                 </div>
                                 <div className="pb-6 border-b border-border">
-                                    <h4 className="font-bold text-foreground mb-2">Are there any hidden maintenance fees?</h4>
+                                    <h4 className="font-bold text-foreground mb-2">Are there any hidden fees?</h4>
                                     <p className="text-muted-foreground text-sm font-light leading-relaxed">
-                                        No. Infygru operates on absolute transparency. Your plan includes the designated support window. We will provide explicit line-item estimates if you require external 3rd-party SaaS software.
+                                        No. Infygru operates on absolute transparency. The price shown is the price you pay. Any optional add-ons are explicitly quoted.
                                     </p>
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-foreground mb-2">Can you integrate with our existing stack?</h4>
+                                    <h4 className="font-bold text-foreground mb-2">Is my payment secure?</h4>
                                     <p className="text-muted-foreground text-sm font-light leading-relaxed">
-                                        Yes. We deploy n8n alongside robust API architectures to seamlessly bridge your legacy software with modern infrastructure.
+                                        Yes. All payments are processed through Paytm&apos;s PCI-DSS compliant gateway with 256-bit SSL encryption. We do not store your card details.
                                     </p>
                                 </div>
                             </div>
