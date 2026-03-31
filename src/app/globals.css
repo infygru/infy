@@ -98,3 +98,98 @@ h6 {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
 }
+
+/* ── Performance & Core Web Vitals Optimizations ── */
+
+/* Reduce CLS: Reserve space for images before they load */
+img {
+  content-visibility: auto;
+}
+
+/* Improve INP: Reduce paint cost on interactive elements */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Contain layout shifts from offscreen content */
+.offscreen-content {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 400px;
+}
+
+/* Optimize text rendering for readability */
+body {
+  text-rendering: optimizeSpeed;
+}
+
+/* Rich text content from CMS */
+.directus-content {
+  line-height: 1.75;
+  color: #475569;
+}
+.directus-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-jakarta), sans-serif;
+}
+.directus-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-jakarta), sans-serif;
+}
+.directus-content p {
+  margin-bottom: 1rem;
+}
+.directus-content ul, .directus-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.directus-content li {
+  margin-bottom: 0.35rem;
+}
+.directus-content a {
+  color: #f59e0b;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.directus-content strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+.directus-content blockquote {
+  border-left: 4px solid #f59e0b;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: #64748b;
+  font-style: italic;
+}
+.directus-content code {
+  background: #f1f5f9;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.875em;
+  color: #334155;
+}
+.directus-content pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+/* Reduce motion for users who prefer it (Core Web Vitals / accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -38,6 +38,7 @@ export type BlogPost = {
     author_role: string | null;
     read_time: string | null;
     date_published: string | null;
+    date_updated: string | null;
     tags: string[] | null;
     seo_title: string | null;
     seo_description: string | null;

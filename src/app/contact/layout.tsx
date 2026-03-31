@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { JsonLd } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
     title: "Contact Us | Get a Free IT & Business Consultation — Infygru Chennai",
@@ -19,6 +20,31 @@ export const metadata: Metadata = {
     },
 };
 
+const contactPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "@id": "https://infygru.com/contact#contactpage",
+    name: "Contact Infygru",
+    description: "Contact Infygru for enterprise IT solutions, business registration, and compliance services.",
+    url: "https://infygru.com/contact",
+    mainEntity: {
+        "@type": "Organization",
+        "@id": "https://infygru.com/#organization",
+    },
+    breadcrumb: {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://infygru.com" },
+            { "@type": "ListItem", position: 2, name: "Contact", item: "https://infygru.com/contact" },
+        ],
+    },
+};
+
 export default function ContactLayout({ children }: { children: ReactNode }) {
-    return <>{children}</>;
+    return (
+        <>
+            <JsonLd data={contactPageSchema} />
+            {children}
+        </>
+    );
 }

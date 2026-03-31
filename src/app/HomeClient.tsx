@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Building2, Briefcase, Cloud, Code, Shield, Bot, Workflow, BarChart, Quote, CheckCircle2, Sparkles, Zap, Globe, Lock, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { motion, useReducedMotion } from "framer-motion";
@@ -22,7 +23,7 @@ const services = [
 const stats = [
     { value: "99.9%", label: "Uptime SLA" },
     { value: "30d", label: "Avg. Delivery" },
-    { value: "14+", label: "Enterprise Clients" },
+    { value: "300+", label: "Projects Delivered" },
     { value: "200+", label: "Hours Saved/Month" },
 ];
 
@@ -219,13 +220,13 @@ export function HomeClient({
                                 View Pricing <ChevronRight className="ml-1 w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                             </Button>
                         </Link>
-                        <Link href="/offerings">
+                        <Link href="/case-studies">
                             <Button
                                 size="lg"
                                 variant="outline"
                                 className="w-full sm:w-auto h-13 px-8 border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 text-slate-200 font-heading font-bold text-base rounded-xl transition-all"
                             >
-                                Explore Offerings
+                                View Case Studies
                             </Button>
                         </Link>
                         <a href={whatsappLink} target="_blank" rel="noopener noreferrer">

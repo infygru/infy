@@ -198,12 +198,20 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                             <h2 className="font-heading text-2xl font-extrabold text-slate-900 mb-5 tracking-tight">Service Overview</h2>
                             <div className="space-y-4 text-slate-600 leading-relaxed">
                                 <p className="font-medium text-slate-800">{service.longDescription}</p>
-                                <p>
-                                    In today&rsquo;s competitive digital landscape, settling for subpar implementations is not an option. Our {service.title} offering is meticulously engineered to overhaul your existing operational paradigms, scale under massive loads, and systematically eradicate technical debt.
-                                </p>
-                                <p>
-                                    The Infygru advantage guarantees that your specific implementation will bypass typical industry pitfalls — launching with exceptional speed (in as little as 30 days) and uncompromising structural integrity.
-                                </p>
+                                {service.uniqueContent ? (
+                                    service.uniqueContent.map((para: string, i: number) => (
+                                        <p key={i}>{para}</p>
+                                    ))
+                                ) : (
+                                    <>
+                                        <p>
+                                            In today&rsquo;s competitive digital landscape, settling for subpar implementations is not an option. Our {service.title} offering is meticulously engineered to overhaul your existing operational paradigms, scale under massive loads, and systematically eradicate technical debt.
+                                        </p>
+                                        <p>
+                                            The Infygru advantage guarantees that your specific implementation will bypass typical industry pitfalls — launching with exceptional speed (in as little as 30 days) and uncompromising structural integrity.
+                                        </p>
+                                    </>
+                                )}
                             </div>
                         </div>
 

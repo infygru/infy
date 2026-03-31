@@ -3,6 +3,31 @@ import { getBlogPosts } from "@/lib/directus";
 
 const BASE_URL = "https://infygru.com";
 
+const servicesSlugs = [
+    "web-development",
+    "n8n-automation",
+    "cloud-migration",
+    "data-analytics",
+    "devops",
+    "servicenow",
+    "security-operations",
+    "ai-computer-vision",
+    "digital-transformation",
+    "business-registration",
+    "compliance-taxation",
+];
+
+const citySlugs = ["chennai", "bangalore", "mumbai", "hyderabad", "delhi", "coimbatore"];
+
+// Generate city × service combinations for local SEO pages
+const cityServiceRoutes = servicesSlugs.flatMap((service) =>
+    citySlugs.map((city) => ({
+        url: `/services/${service}/${city}`,
+        priority: 0.75,
+        changeFrequency: "monthly" as const,
+    }))
+);
+
 const staticRoutes: {
     url: string;
     priority: number;
@@ -15,6 +40,7 @@ const staticRoutes: {
     { url: "/contact", priority: 0.8, changeFrequency: "monthly" },
     { url: "/blog", priority: 0.7, changeFrequency: "daily" },
     { url: "/careers", priority: 0.6, changeFrequency: "weekly" },
+    { url: "/case-studies", priority: 0.8, changeFrequency: "monthly" },
     // IT Services
     { url: "/services/web-development", priority: 0.85, changeFrequency: "monthly" },
     { url: "/services/n8n-automation", priority: 0.85, changeFrequency: "monthly" },
@@ -28,6 +54,8 @@ const staticRoutes: {
     // Business Services
     { url: "/services/business-registration", priority: 0.85, changeFrequency: "monthly" },
     { url: "/services/compliance-taxation", priority: 0.85, changeFrequency: "monthly" },
+    // City-specific service pages
+    ...cityServiceRoutes,
     // Legal
     { url: "/legal/privacy", priority: 0.3, changeFrequency: "yearly" },
     { url: "/legal/terms", priority: 0.3, changeFrequency: "yearly" },

@@ -30,6 +30,7 @@ const itServices = [
     { name: "Cloud Migration", href: "/services/cloud-migration", desc: "AWS · Azure · GCP" },
     { name: "Data Analytics", href: "/services/data-analytics", desc: "Dashboards & BI" },
     { name: "DevOps", href: "/services/devops", desc: "CI/CD pipelines" },
+    { name: "ServiceNow", href: "/services/servicenow", desc: "ITSM implementation" },
     { name: "Security Operations", href: "/services/security-operations", desc: "24/7 monitoring" },
     { name: "AI & Computer Vision", href: "/services/ai-computer-vision", desc: "ML & Vision AI" },
     { name: "Digital Transformation", href: "/services/digital-transformation", desc: "End-to-end modernisation" },
@@ -49,6 +50,7 @@ const businessServices = [
 const companyLinks = [
     { name: "About Us", href: "/about" },
     { name: "All Offerings", href: "/offerings" },
+    { name: "Case Studies", href: "/case-studies" },
     { name: "Pricing", href: "/pricing" },
     { name: "Careers", href: "/careers" },
     { name: "Blog", href: "/blog" },

@@ -7,7 +7,14 @@ export default function robots(): MetadataRoute.Robots {
             {
                 userAgent: "*",
                 allow: "/",
-                disallow: ["/api/", "/_next/", "/admin/", "/checkout"],
+                disallow: [
+                    "/api/",
+                    "/_next/",
+                    "/admin/",
+                    "/checkout",
+                    "/payment-success",
+                    "/payment-failed",
+                ],
             },
             // Google search AI (SGE / AI Overviews)
             {

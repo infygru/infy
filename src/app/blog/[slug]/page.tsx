@@ -119,11 +119,14 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         author: {
             "@type": "Person",
             name: post.author_name || "Infygru Editorial Team",
+            ...(post.author_role ? { jobTitle: post.author_role } : {}),
+            worksFor: { "@id": `${BASE_URL}/#organization` },
         },
         publisher: {
             "@id": `${BASE_URL}/#organization`,
         },
         datePublished: post.date_published || undefined,
+        dateModified: post.date_updated || post.date_published || undefined,
         url: `${BASE_URL}/blog/${slug}`,
         mainEntityOfPage: {
             "@type": "WebPage",
@@ -131,6 +134,14 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         },
         keywords: tags.join(", ") || undefined,
         articleSection: catName,
+        image: {
+            "@type": "ImageObject",
+            url: `${BASE_URL}/og-image.png`,
+            width: 1200,
+            height: 630,
+        },
+        inLanguage: "en-IN",
+        isPartOf: { "@id": `${BASE_URL}/#website` },
     };
 
     const breadcrumbSchema = {

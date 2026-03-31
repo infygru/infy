@@ -94,9 +94,14 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  // Disable source maps in production for security and smaller bundles
+  productionBrowserSourceMaps: false,
+
   // Experimental optimisations
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
+    // Improve scroll restoration for better UX and Core Web Vitals
+    scrollRestoration: true,
   },
 };
 

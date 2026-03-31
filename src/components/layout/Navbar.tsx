@@ -9,18 +9,28 @@ import { usePathname } from "next/navigation";
 
 const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Offerings", href: "/offerings" },
+    { name: "About", href: "/about" },
     {
         name: "Services",
-        href: "#",
+        href: "/offerings",
         dropdown: [
-            { name: "Website Development", href: "/services/web-development" },
-            { name: "n8n Automation", href: "/services/n8n-automation" },
-            { name: "Business Registration", href: "/services/business-registration" },
-            { name: "Compliance & Taxation", href: "/services/compliance-taxation" },
+            // IT & Cloud
+            { name: "Website Development", href: "/services/web-development", group: "IT & Cloud" },
+            { name: "n8n Automation", href: "/services/n8n-automation", group: "IT & Cloud" },
+            { name: "Cloud Migration", href: "/services/cloud-migration", group: "IT & Cloud" },
+            { name: "DevOps", href: "/services/devops", group: "IT & Cloud" },
+            { name: "Data Analytics", href: "/services/data-analytics", group: "IT & Cloud" },
+            { name: "AI & Computer Vision", href: "/services/ai-computer-vision", group: "IT & Cloud" },
+            { name: "Security Operations", href: "/services/security-operations", group: "IT & Cloud" },
+            { name: "ServiceNow", href: "/services/servicenow", group: "IT & Cloud" },
+            { name: "Digital Transformation", href: "/services/digital-transformation", group: "IT & Cloud" },
+            // Business & Compliance
+            { name: "Business Registration", href: "/services/business-registration", group: "Business" },
+            { name: "Compliance & Taxation", href: "/services/compliance-taxation", group: "Business" },
         ],
     },
     { name: "Pricing", href: "/pricing" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
 ];
 
@@ -92,18 +102,41 @@ export function Navbar() {
                                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                                 exit={{ opacity: 0, y: 6, scale: 0.97 }}
                                                 transition={{ duration: 0.18 }}
-                                                className="absolute top-full left-0 mt-1.5 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden py-2"
+                                                className="absolute top-full left-0 mt-1.5 w-[480px] bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden py-3"
                                             >
-                                                {link.dropdown.map((item) => (
-                                                    <Link
-                                                        key={item.name}
-                                                        href={item.href}
-                                                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 hover:text-amber-600 hover:bg-amber-50 transition-all"
-                                                    >
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                                                        {item.name}
-                                                    </Link>
-                                                ))}
+                                                <div className="grid grid-cols-2 gap-0">
+                                                    <div className="border-r border-slate-100">
+                                                        <p className="text-[10px] font-bold uppercase tracking-widest text-amber-600 px-4 pt-2 pb-1.5">IT &amp; Cloud</p>
+                                                        {link.dropdown.filter(i => i.group === "IT & Cloud").map((item) => (
+                                                            <Link
+                                                                key={item.name}
+                                                                href={item.href}
+                                                                className="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-slate-700 hover:text-amber-600 hover:bg-amber-50 transition-all"
+                                                            >
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                                                                {item.name}
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] font-bold uppercase tracking-widest text-green-600 px-4 pt-2 pb-1.5">Business</p>
+                                                        {link.dropdown.filter(i => i.group === "Business").map((item) => (
+                                                            <Link
+                                                                key={item.name}
+                                                                href={item.href}
+                                                                className="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-slate-700 hover:text-green-600 hover:bg-green-50 transition-all"
+                                                            >
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />
+                                                                {item.name}
+                                                            </Link>
+                                                        ))}
+                                                        <div className="mx-4 mt-3 pt-3 border-t border-slate-100">
+                                                            <Link href="/offerings" className="flex items-center gap-2 text-xs font-bold text-amber-600 hover:text-amber-500 transition-colors">
+                                                                View all services →
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -182,14 +215,26 @@ export function Navbar() {
                                                     animate={{ opacity: 1, height: "auto" }}
                                                     exit={{ opacity: 0, height: 0 }}
                                                     transition={{ duration: 0.2 }}
-                                                    className="overflow-hidden ml-4 mt-1 border-l-2 border-amber-200 pl-3 space-y-1"
+                                                    className="overflow-hidden ml-4 mt-1 border-l-2 border-amber-200 pl-3"
                                                 >
-                                                    {link.dropdown.map((item) => (
+                                                    <p className="text-[10px] font-bold uppercase tracking-widest text-amber-600 py-1.5">IT &amp; Cloud</p>
+                                                    {link.dropdown.filter(i => i.group === "IT & Cloud").map((item) => (
                                                         <Link
                                                             key={item.name}
                                                             href={item.href}
                                                             onClick={() => setIsOpen(false)}
-                                                            className="block py-2.5 text-sm font-medium text-slate-600 hover:text-amber-600 transition-colors"
+                                                            className="block py-2 text-sm font-medium text-slate-600 hover:text-amber-600 transition-colors"
+                                                        >
+                                                            {item.name}
+                                                        </Link>
+                                                    ))}
+                                                    <p className="text-[10px] font-bold uppercase tracking-widest text-green-600 py-1.5 mt-1">Business</p>
+                                                    {link.dropdown.filter(i => i.group === "Business").map((item) => (
+                                                        <Link
+                                                            key={item.name}
+                                                            href={item.href}
+                                                            onClick={() => setIsOpen(false)}
+                                                            className="block py-2 text-sm font-medium text-slate-600 hover:text-green-600 transition-colors"
                                                         >
                                                             {item.name}
                                                         </Link>

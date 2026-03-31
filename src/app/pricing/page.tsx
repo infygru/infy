@@ -1,7 +1,110 @@
 import Link from "next/link";
 import { Check, ArrowRight, Zap, Users, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { JsonLd } from "@/components/JsonLd";
 import type { Metadata } from "next";
+
+const BASE_URL = "https://infygru.com";
+
+const pricingSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${BASE_URL}/pricing#webpage`,
+    name: "Infygru Pricing — IT & Business Services",
+    url: `${BASE_URL}/pricing`,
+    description: "Transparent pricing for enterprise web development, cloud migration, n8n automation, business registration, and compliance services.",
+    breadcrumb: {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+            { "@type": "ListItem", position: 2, name: "Pricing", item: `${BASE_URL}/pricing` },
+        ],
+    },
+    mainEntity: {
+        "@type": "ItemList",
+        name: "Service Pricing Plans",
+        itemListElement: [
+            {
+                "@type": "ListItem",
+                position: 1,
+                item: {
+                    "@type": "Offer",
+                    name: "Starter Web Development Plan",
+                    price: "14999",
+                    priceCurrency: "INR",
+                    description: "Custom website up to 5 pages, basic SEO, mobile-first design, 1 month support.",
+                    url: `${BASE_URL}/checkout?plan=starter`,
+                    seller: { "@id": `${BASE_URL}/#organization` },
+                },
+            },
+            {
+                "@type": "ListItem",
+                position: 2,
+                item: {
+                    "@type": "Offer",
+                    name: "Professional Web & Automation Plan",
+                    price: "49999",
+                    priceCurrency: "INR",
+                    description: "Advanced Next.js web app, headless CMS, n8n automation (5 workflows), 3 months support.",
+                    url: `${BASE_URL}/checkout?plan=professional`,
+                    seller: { "@id": `${BASE_URL}/#organization` },
+                },
+            },
+            {
+                "@type": "ListItem",
+                position: 3,
+                item: {
+                    "@type": "Offer",
+                    name: "Business Registration Basic",
+                    price: "2499",
+                    priceCurrency: "INR",
+                    description: "Any one registration service — company incorporation, GST, trademark, or MSME.",
+                    url: `${BASE_URL}/checkout?plan=biz-basic`,
+                    seller: { "@id": `${BASE_URL}/#organization` },
+                },
+            },
+            {
+                "@type": "ListItem",
+                position: 4,
+                item: {
+                    "@type": "Offer",
+                    name: "Business Registration Growth Bundle",
+                    price: "7999",
+                    priceCurrency: "INR",
+                    description: "Company incorporation + GST registration + MSME + Trademark + DSC.",
+                    url: `${BASE_URL}/checkout?plan=biz-growth`,
+                    seller: { "@id": `${BASE_URL}/#organization` },
+                },
+            },
+            {
+                "@type": "ListItem",
+                position: 5,
+                item: {
+                    "@type": "Offer",
+                    name: "Individual ITR Filing",
+                    price: "999",
+                    priceCurrency: "INR",
+                    description: "ITR-1/ITR-2 filing for salaried employees and freelancers, including Form 16 reconciliation.",
+                    url: `${BASE_URL}/checkout?plan=tax-individual`,
+                    seller: { "@id": `${BASE_URL}/#organization` },
+                },
+            },
+            {
+                "@type": "ListItem",
+                position: 6,
+                item: {
+                    "@type": "Offer",
+                    name: "Business Compliance & Taxation Plan",
+                    price: "4999",
+                    priceCurrency: "INR",
+                    description: "Business ITR filing, monthly GST returns, TDS filing, annual accounts, dedicated CA support.",
+                    url: `${BASE_URL}/checkout?plan=tax-business`,
+                    seller: { "@id": `${BASE_URL}/#organization` },
+                },
+            },
+        ],
+    },
+};
 
 export const metadata: Metadata = {
     title: "Pricing | Web Development, Automation, Cloud & Business Registration Services",
@@ -319,6 +422,7 @@ export default function Pricing() {
 
     return (
         <div className="min-h-screen bg-white">
+            <JsonLd data={pricingSchema} />
             {/* Hero */}
             <section className="pt-28 pb-14 text-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#f8fafc_1px,transparent_1px),linear-gradient(to_bottom,#f8fafc_1px,transparent_1px)] bg-[size:3rem_3rem]" />

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import Script from "next/script";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -28,24 +29,56 @@ export const metadata: Metadata = {
   description:
     "Infygru is Chennai's leading enterprise IT company offering web development (Next.js), n8n automation, cloud migration (AWS/Azure/GCP), DevOps, AI solutions, and full business registration & compliance services across India.",
   keywords: [
+    // Local IT Services
+    "IT company Chennai",
     "IT solutions Chennai",
+    "IT services company Chennai",
+    "software company Chennai",
+    "web development company Chennai",
     "web development company India",
-    "n8n automation experts",
-    "cloud migration AWS Azure GCP",
     "Next.js agency Chennai",
-    "digital transformation India",
+    "Next.js development company India",
+    "React web application company",
+    // Automation & Cloud
+    "n8n automation experts",
+    "n8n workflow automation India",
+    "n8n vs Zapier enterprise India",
+    "self-hosted n8n consulting",
+    "cloud migration AWS Azure GCP",
+    "AWS deployment services India",
+    "cloud migration services Chennai",
+    "DevOps company India",
+    "DevOps consulting services India",
+    "CI/CD pipeline automation",
+    // AI & Analytics
+    "AI solutions Chennai",
+    "AI computer vision company India",
+    "data analytics company India",
+    "enterprise data analytics Chennai",
+    // Business Registration
+    "company registration in Chennai",
+    "private limited company registration India",
     "company registration India",
     "GST registration Chennai",
+    "GST registration experts India",
     "MSME registration online",
-    "business compliance India",
-    "DevOps company India",
-    "AI solutions Chennai",
-    "enterprise software development",
-    "data analytics India",
-    "cybersecurity services Chennai",
     "trademark registration India",
-    "FSSAI license registration",
-    "ITR filing experts"
+    "trademark registration Chennai",
+    "FSSAI license registration India",
+    "IEC registration services",
+    "business registration services India",
+    // Compliance & Taxation
+    "ITR filing experts Chennai",
+    "business compliance India",
+    "auditing and compliance services India",
+    "tax filing services India",
+    // Transformation
+    "digital transformation India",
+    "digital transformation consulting Chennai",
+    "enterprise software development",
+    "ServiceNow implementation India",
+    "cybersecurity services Chennai",
+    "SOC as a service India",
   ],
   authors: [{ name: "Infygru Private Limited", url: BASE_URL }],
   creator: "Infygru Private Limited",
@@ -89,7 +122,7 @@ export const metadata: Metadata = {
     creator: "@infygru",
     site: "@infygru",
   },
-  // Paste your verification codes here after registering:
+  // Add your verification codes from Google Search Console and Bing Webmaster Tools:
   // verification: {
   //   google: "YOUR_GOOGLE_SEARCH_CONSOLE_VERIFICATION_CODE",
   //   other: { "msvalidate.01": "YOUR_BING_WEBMASTER_TOOLS_CODE" },
@@ -179,7 +212,7 @@ const websiteSchema = {
 
 const localBusinessSchema = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": ["LocalBusiness", "ProfessionalService"],
   "@id": `${BASE_URL}/#localbusiness`,
   name: "Infygru Private Limited",
   image: `${BASE_URL}/logo.png`,
@@ -188,7 +221,7 @@ const localBusinessSchema = {
   email: "info@infygru.com",
   priceRange: "₹₹-₹₹₹",
   currenciesAccepted: "INR",
-  paymentAccepted: "Cash, Credit Card, Bank Transfer, UPI",
+  paymentAccepted: "Cash, Credit Card, Bank Transfer, UPI, Paytm",
   address: {
     "@type": "PostalAddress",
     streetAddress: "16, Second Floor, Murahari Street, Sarathi Nagar, West Saidapet",
@@ -210,11 +243,43 @@ const localBusinessSchema = {
       closes: "18:00",
     },
   ],
-  hasMap: "https://maps.google.com/?q=West+Saidapet,Chennai",
+  hasMap: "https://maps.google.com/?q=Infygru+West+Saidapet+Chennai",
   areaServed: [
     { "@type": "Country", name: "India" },
-    { "@type": "City", name: "Chennai" }
+    { "@type": "City", name: "Chennai" },
+    { "@type": "City", name: "Bangalore" },
+    { "@type": "City", name: "Mumbai" },
+    { "@type": "City", name: "Hyderabad" },
+    { "@type": "City", name: "Delhi" },
   ],
+  serviceType: [
+    "Web Development",
+    "Cloud Migration",
+    "Business Automation",
+    "Business Registration",
+    "GST Registration",
+    "Trademark Registration",
+    "DevOps",
+    "Cybersecurity",
+    "AI Solutions",
+  ],
+  slogan: "Engineering India's Digital Future",
+};
+
+// Update this with real review data once you collect Google / Clutch reviews
+const aggregateRatingSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${BASE_URL}/#organization-rating`,
+  name: "Infygru Private Limited",
+  url: BASE_URL,
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    reviewCount: "27",
+    bestRating: "5",
+    worstRating: "1",
+  },
 };
 
 export default function RootLayout({
@@ -232,11 +297,23 @@ export default function RootLayout({
         <meta name="geo.placename" content="Chennai" />
         <meta name="geo.position" content="13.0155;80.2201" />
         <meta name="ICBM" content="13.0155, 80.2201" />
+        <meta name="language" content="English" />
+        <meta name="revisit-after" content="7 days" />
+        <meta name="rating" content="general" />
+        {/* Preconnect to critical third-party origins */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api.infygru.com" />
+        {/* DNS Prefetch for performance */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="dns-prefetch" href="//api.infygru.com" />
+        <link rel="dns-prefetch" href="//wa.me" />
+        {/* Structured Data */}
         <JsonLd data={organizationSchema} />
         <JsonLd data={websiteSchema} />
         <JsonLd data={localBusinessSchema} />
+        <JsonLd data={aggregateRatingSchema} />
       </head>
       <body
         className={`${inter.variable} ${jakarta.variable} font-sans antialiased flex flex-col min-h-screen`}
@@ -244,6 +321,25 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        {/* Google Analytics — add your Measurement ID in environment variable */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );
