@@ -6,44 +6,101 @@ export const servicesData = [
         description: "A service that helps companies formulate their digital transformation strategy and implement it to enhance their performance.",
         longDescription: "Our Digital Transformation consulting fundamentally changes how your business operates and delivers value. By modernizing legacy systems and adopting agile methodologies, we align your IT strategy directly with your business goals. We focus on continuous optimization, integrating AI and modern workflows to ensure your enterprise remains aggressively competitive in the market.",
         iconName: "Workflow",
-        seoKeywords: ["digital transformation consulting", "legacy system modernization", "IT strategy formulation", "enterprise process optimization", "agile transformation Chennai"],
+        seoKeywords: [
+            "digital transformation consulting", 
+            "legacy system modernization", 
+            "IT strategy formulation India", 
+            "enterprise process optimization", 
+            "agile transformation Chennai",
+            "business technology strategy",
+            "digital maturity assessment"
+        ],
         features: [
             "Strategy Formulation",
             "Process Optimization",
             "Technology Integration",
             "Change Management"
         ],
-        benefits: ["Increased Operational Agility", "Reduced Technical Debt", "Data-Driven Decision Making"]
+        benefits: ["Increased Operational Agility", "Reduced Technical Debt", "Data-Driven Decision Making"],
+        relatedSlugs: ["digital-transformation", "data-analytics", "cloud-migration"],
+        faqs: [
+            {
+                question: "What is included in a digital transformation strategy?",
+                answer: "A comprehensive strategy includes legacy system assessment, target state architecture, cloud roadmap, and organizational change management plans."
+            },
+            {
+                question: "How long does a digital transformation take?",
+                answer: "The timeline varies based on enterprise size, but initial milestones are typically achieved within 3-6 months."
+            }
+        ]
     },
     {
         slug: "web-development",
         title: "Website Development",
         description: "We develop enterprise-grade websites that showcase all wings of your business. We understand your key domain areas and help you attract more audiences globally.",
-        longDescription: "We engineer ultra-fast, responsive, and secure custom web applications utilizing modern stacks like Next.js and React. Our approach guarantees high SEO rankings, lightning-fast load times, and a stunning user experience. We build scalable digital ecosystems that can effortlessly handle massive concurrent traffic without compromising performance.",
+        longDescription: "We engineer ultra-fast, responsive, and secure custom web applications utilizing modern stacks like Next.js, React, and Node.js. Our approach guarantees high search engine rankings through technical SEO excellence, lightning-fast load times, and a stunning user experience. We build scalable digital ecosystems optimized for search and conversion.",
         iconName: "Code",
-        seoKeywords: ["enterprise web development Chennai", "Next.js development agency", "React web applications", "custom CMS development", "high-performance web apps"],
+        seoKeywords: [
+            "enterprise web development Chennai", 
+            "Next.js development agency India", 
+            "React web application company", 
+            "custom CMS development", 
+            "high-performance web apps",
+            "professional website design Chennai",
+            "e-commerce portal development"
+        ],
         features: [
             "Custom Web Apps",
             "E-commerce Solutions",
             "CMS Development",
             "Responsive UI/UX Design"
         ],
-        benefits: ["Global Audience Reach", "Sub-second Page Loads", "Enhanced Brand Authority"]
+        benefits: ["Global Audience Reach", "Sub-second Page Loads", "Enhanced Brand Authority"],
+        relatedSlugs: ["digital-transformation", "n8n-automation", "data-analytics"],
+        faqs: [
+            {
+                question: "Can you help with Next.js development and SEO?",
+                answer: "Yes, we specialize in Next.js which provides excellent server-side rendering (SSR) and static site generation (SSG) for superior SEO performance."
+            },
+            {
+                question: "How long does it take to develop an enterprise website?",
+                answer: "A standard enterprise website typically takes 4-8 weeks from discovery to deployment."
+            }
+        ]
     },
     {
         slug: "n8n-automation",
         title: "n8n Automation",
         description: "Enterprise workflow automation using n8n. Connect all your apps and APIs to streamline your business logic without limits.",
-        longDescription: "Infygru specializes in massive-scale hyper-automation using self-hosted n8n instances. We eliminate manual data entry, synchronize diverse API endpoints, and orchestrate complex conditional logic across your entire software ecosystem. This drastically reduces human error and frees up thousands of hours for your core team.",
+        longDescription: "Infygru specializes in massive-scale hyper-automation using self-hosted n8n instances. We eliminate manual data entry, synchronize diverse API endpoints, and orchestrate complex conditional logic across your entire software ecosystem. Our n8n experts help you achieve operational excellence through seamless integrations.",
         iconName: "Bot",
-        seoKeywords: ["n8n workflow automation", "enterprise API integration", "business logic automation", "self-hosted n8n experts", "hyper-automation services"],
+        seoKeywords: [
+            "n8n workflow automation experts", 
+            "enterprise API integration", 
+            "business logic automation", 
+            "self-hosted n8n consulting", 
+            "hyper-automation services India",
+            "low-code automation Chennai",
+            "n8n setup and hosting"
+        ],
         features: [
             "Custom Workflow Creation",
             "API Integrations",
             "Business Logic Automation",
             "Self-hosted & Scalable"
         ],
-        benefits: ["Eliminate Manual Work", "Real-time Data Sync", "Infinitely Scalable Logic"]
+        benefits: ["Eliminate Manual Work", "Real-time Data Sync", "Infinitely Scalable Logic"],
+        relatedSlugs: ["web-development", "digital-transformation", "devops"],
+        faqs: [
+            {
+                question: "Why choose n8n over Zapier or Make?",
+                answer: "n8n offers self-hosting options, no data-sharing risks, and unlimited executions without per-task costs, making it ideal for enterprises."
+            },
+            {
+                question: "What can be automated using n8n?",
+                answer: "Almost anything with an API—from CRM-Email syncing to complex financial reporting and automated customer support."
+            }
+        ]
     },
     {
         slug: "cloud-migration",
@@ -139,9 +196,19 @@ export const servicesData = [
         slug: "business-registration",
         title: "Business Registration & Licensing",
         description: "Comprehensive registration and licensing services including Company Incorporation, Trademark Registration, GST, and more.",
-        longDescription: "We provide end-to-end support for all your business registration and licensing needs. From company incorporation to securing vital certifications like MSME, FSSAI, and IEC, our experts ensure complete adherence to legal standards, so you can focus on building your enterprise.",
+        longDescription: "We provide end-to-end support for all your business registration and licensing needs in India. From company incorporation (Private Limited, LLP, One Person Company) to securing vital certifications like MSME, FSSAI, and IEC, our experts ensure complete adherence to legal standards. We are your trusted partners for GST registration in Chennai and beyond.",
         iconName: "Building2",
-        seoKeywords: ["company incorporation", "trademark registration", "GST registration", "MSME registration", "FSSAI license", "IEC registration", "APEDA registration"],
+        seoKeywords: [
+            "company incorporation India", 
+            "trademark registration Chennai", 
+            "GST registration experts", 
+            "MSME registration online", 
+            "FSSAI food license India", 
+            "IEC registration services", 
+            "APEDA registration help",
+            "Private Limited Company registration",
+            "Sole Proprietorship registration"
+        ],
         features: [
             "Company Incorporation",
             "Trademark Registration",
@@ -152,20 +219,50 @@ export const servicesData = [
             "APEDA Registration",
             "Barcode Registration"
         ],
-        benefits: ["Legal Compliance", "Brand Protection", "Market Expansion"]
+        benefits: ["Legal Compliance", "Brand Protection", "Market Expansion"],
+        relatedSlugs: ["compliance-taxation", "digital-transformation", "web-development"],
+        faqs: [
+            {
+                question: "What documents are required for company incorporation?",
+                answer: "Typically, PAN cards, Aadhar cards, bank statements of directors, and proof of registered office address are required."
+            },
+            {
+                question: "How long does GST registration take?",
+                answer: "GST registration usually takes 3 to 7 working days, subject to government approval and documentation accuracy."
+            }
+        ]
     },
     {
         slug: "compliance-taxation",
         title: "Compliance & Taxation",
         description: "Expert auditing, compliance, tax filing, and certification services to keep your business fully compliant and financially healthy.",
-        longDescription: "Navigate complex tax and compliance frameworks seamlessly with our expert services. We handle everything from routine Auditing & Compliance reports to timely ITR Filings. We also assist in securing mandatory industry-specific standards such as IATF Certification to optimize operations and trust.",
+        longDescription: "Navigate complex Indian tax and compliance frameworks seamlessly. We handle everything from routine Auditing & Compliance reports to timely ITR Filings (Income Tax) and GST returns. We also assist in securing mandatory industry-specific standards such as IATF Certification to optimize operations and trust.",
         iconName: "Briefcase",
-        seoKeywords: ["auditing compliance", "ITR filing experts", "IATF certification", "taxation services", "business compliance consulting"],
+        seoKeywords: [
+            "auditing and compliance services", 
+            "ITR filing experts Chennai", 
+            "IATF certification help", 
+            "taxation services for startups", 
+            "business compliance consulting India",
+            "GST return filing",
+            "Tax audit services India"
+        ],
         features: [
             "Auditing & Compliance",
             "ITR Filing",
             "IATF Certification"
         ],
-        benefits: ["Penalty Avoidance", "Financial Transparency", "Industry Certification"]
+        benefits: ["Penalty Avoidance", "Financial Transparency", "Industry Certification"],
+        relatedSlugs: ["business-registration", "digital-transformation", "data-analytics"],
+        faqs: [
+            {
+                question: "When is the deadline for ITR filing?",
+                answer: "For individuals and non-audited businesses, the usual deadline is July 31st each year. For audited firms, it is October 31st."
+            },
+            {
+                question: "Why is IATF certification important?",
+                answer: "IATF 16949 is critical for businesses in the automotive supply chain, ensuring quality and operational excellence."
+            }
+        ]
     }
 ];

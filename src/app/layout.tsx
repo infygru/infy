@@ -34,15 +34,18 @@ export const metadata: Metadata = {
     "cloud migration AWS Azure GCP",
     "Next.js agency Chennai",
     "digital transformation India",
-    "company registration Chennai",
-    "GST filing services India",
-    "MSME registration",
+    "company registration India",
+    "GST registration Chennai",
+    "MSME registration online",
     "business compliance India",
     "DevOps company India",
-    "AI computer vision India",
-    "enterprise software Chennai",
+    "AI solutions Chennai",
+    "enterprise software development",
     "data analytics India",
     "cybersecurity services Chennai",
+    "trademark registration India",
+    "FSSAI license registration",
+    "ITR filing experts"
   ],
   authors: [{ name: "Infygru Private Limited", url: BASE_URL }],
   creator: "Infygru Private Limited",
@@ -183,7 +186,9 @@ const localBusinessSchema = {
   url: BASE_URL,
   telephone: "+91-83002-90019",
   email: "info@infygru.com",
-  priceRange: "₹₹",
+  priceRange: "₹₹-₹₹₹",
+  currenciesAccepted: "INR",
+  paymentAccepted: "Cash, Credit Card, Bank Transfer, UPI",
   address: {
     "@type": "PostalAddress",
     streetAddress: "16, Second Floor, Murahari Street, Sarathi Nagar, West Saidapet",
@@ -200,16 +205,16 @@ const localBusinessSchema = {
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       opens: "09:00",
       closes: "18:00",
     },
   ],
   hasMap: "https://maps.google.com/?q=West+Saidapet,Chennai",
-  areaServed: {
-    "@type": "Country",
-    name: "India",
-  },
+  areaServed: [
+    { "@type": "Country", name: "India" },
+    { "@type": "City", name: "Chennai" }
+  ],
 };
 
 export default function RootLayout({

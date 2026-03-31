@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/JsonLd";
-import { CheckCircle2, ArrowLeft, ArrowRight, ChevronRight, Zap, ShieldCheck, Activity, Clock } from "lucide-react";
+import { CheckCircle2, ArrowLeft, ArrowRight, ChevronRight, Zap, ShieldCheck, Activity, Clock, HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
 
 const BASE_URL = "https://infygru.com";
@@ -19,16 +19,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const service = servicesData.find((s) => s.slug === slug);
     if (!service) return { title: 'Service Not Found | Infygru' };
 
+    const title = `${service.title} | Enterprise ${service.title} Services in India | Infygru`;
+    const description = service.longDescription?.substring(0, 160) || service.description;
+
     return {
-        title: `${service.title} | Enterprise ${service.title} Services in India | Infygru`,
-        description: service.longDescription || service.description,
+        title,
+        description,
         keywords: service.seoKeywords || [service.title, "Chennai", "India", "enterprise"],
-        alternates: { canonical: `https://infygru.com/services/${slug}` },
+        alternates: { canonical: `${BASE_URL}/services/${slug}` },
         openGraph: {
             title: `${service.title} Services | Infygru`,
             description: service.description,
-            url: `https://infygru.com/services/${slug}`,
-            images: [{ url: "https://infygru.com/og-image.png", width: 1200, height: 630 }],
+            url: `${BASE_URL}/services/${slug}`,
+            images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630 }],
         },
         twitter: {
             card: "summary_large_image",
@@ -109,10 +112,24 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         ],
     };
 
+    const faqSchema = service.faqs && service.faqs.length > 0 ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": service.faqs.map(faq => ({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+            }
+        }))
+    } : null;
+
     return (
         <div className="min-h-screen bg-white">
             <JsonLd data={serviceSchema} />
             <JsonLd data={breadcrumbSchema} />
+            {faqSchema && <JsonLd data={faqSchema} />}
 
             {/* ── Compact Hero ── */}
             <section className="relative py-14 bg-slate-950 overflow-hidden">
@@ -228,7 +245,29 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                                     ))}
                                 </div>
                             </div>
-                        </div>
+                            {/* FAQ Section */}
+                        {service.faqs && service.faqs.length > 0 && (
+                            <div className="pt-8 border-t border-slate-100">
+                                <h2 className="font-heading text-2xl font-extrabold text-slate-900 mb-8 tracking-tight flex items-center gap-3">
+                                    <HelpCircle className="w-6 h-6 text-amber-500" />
+                                    Frequently Asked Questions
+                                </h2>
+                                <div className="space-y-4">
+                                    {service.faqs.map((faq, idx) => (
+                                        <div key={idx} className="bg-slate-50/50 border border-slate-100 rounded-2xl p-6 hover:bg-white hover:border-amber-100 transition-all">
+                                            <h3 className="text-slate-900 font-bold text-base mb-3 flex items-start gap-3">
+                                                <span className="text-amber-500 font-black text-xs mt-1">Q.</span>
+                                                {faq.question}
+                                            </h3>
+                                            <p className="text-slate-600 text-sm leading-relaxed pl-7">
+                                                {faq.answer}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     </div>
 
                     {/* Sidebar */}
@@ -274,6 +313,18 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                                         <span className="text-sm font-medium text-slate-700 group-hover:text-amber-700 transition-colors">{s.title}</span>
                                         <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 ml-auto transition-colors" />
                                     </Link>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Service Areas for Local SEO */}
+                        <div className="pt-4">
+                            <h3 className="font-heading text-sm font-bold text-slate-900 mb-4 uppercase tracking-widest">Major Service Cities</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {["Chennai", "Coimbatore", "Bangalore", "Hyderabad", "Mumbai", "Delhi"].map((city) => (
+                                    <span key={city} className="text-[10px] font-bold text-slate-400 border border-slate-100 px-2 py-1 rounded-md uppercase tracking-tighter">
+                                        {city}
+                                    </span>
                                 ))}
                             </div>
                         </div>
