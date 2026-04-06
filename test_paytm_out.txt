@@ -1,0 +1,22 @@
+--- REQ ---
+{
+  "body": {
+    "requestType": "Payment",
+    "mid": "XVTaon26026633479601",
+    "websiteName": "DEFAULT",
+    "orderId": "ORDER_1773256775753",
+    "callbackUrl": "http://localhost:3000/api/paytm/callback",
+    "txnAmount": {
+      "value": "1.00",
+      "currency": "INR"
+    },
+    "userInfo": {
+      "custId": "CUST_1773256775753"
+    }
+  },
+  "head": {
+    "signature": "Kq/DHjQqsnwy+4lpVhF657ylLckupugZoR2Y5b9llN+V/BvBjiC25H3hWOzkl8SHDBAdMbwWLbIBOH+Ii15Pw/UNiRSkwG7kmTMfIJWlp4U="
+  }
+}
+--- RES ---
+{"head":{"requestId":null,"responseTimestamp":"1773256778778","version":"v1"},"body":{"extraParamsMap":null,"resultInfo":{"resultStatus":"F","resultCode":"501","resultMsg":"System Error"}}}
