@@ -13,7 +13,6 @@ import {
   ArrowRight,
   CheckCircle,
   Phone,
-  Star,
   X,
   Play,
   ExternalLink,
@@ -22,6 +21,8 @@ import {
   Zap,
   Clock,
   TrendingUp,
+  Send,
+  Loader2,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────
@@ -122,6 +123,163 @@ function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
    PAGE
 ───────────────────────────────────────────── */
 
+/* ─────────────────────────────────────────────
+   ENQUIRY FORM
+───────────────────────────────────────────── */
+
+function EnquiryForm() {
+  const [form, setForm] = useState({ name: "", email: "", phone: "", company: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/uk-travel-enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("success");
+      setForm({ name: "", email: "", phone: "", company: "" });
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  return (
+    <section
+      id="enquire"
+      className="py-28 px-6 relative overflow-hidden"
+      style={{ background: "linear-gradient(135deg, #f8fafc 0%, #eff6ff 50%, #f5f3ff 100%)" }}
+    >
+      <div className="max-w-2xl mx-auto">
+        <Reveal className="text-center mb-10">
+          <div
+            className="inline-flex items-center gap-2 text-blue-700 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-5"
+            style={{ background: "rgba(37,99,235,0.1)", border: "1px solid rgba(37,99,235,0.2)" }}
+          >
+            <Send className="w-3.5 h-3.5" /> Get in touch
+          </div>
+          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
+            Interested? Tell us about your agency.
+          </h2>
+          <p className="text-gray-500 text-base">
+            Fill in your details and we&apos;ll reach out within 24 hours to schedule a free 30-min call.
+          </p>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <div
+            className="bg-white rounded-3xl p-8 md:p-10 relative overflow-hidden"
+            style={{ boxShadow: "0 20px 60px rgba(37,99,235,0.1)", border: "1px solid rgba(37,99,235,0.1)" }}
+          >
+            {/* gradient top bar */}
+            <div
+              className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
+              style={{ background: "linear-gradient(90deg, #2563eb, #7c3aed, #f59e0b)" }}
+            />
+
+            {status === "success" ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="py-12 text-center"
+              >
+                <div className="text-5xl mb-4">🎉</div>
+                <h3 className="text-xl font-black text-gray-900 mb-2">We&apos;ve got your details!</h3>
+                <p className="text-gray-500 text-sm">We&apos;ll be in touch within 24 hours. Keep an eye on your inbox.</p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid sm:grid-cols-2 gap-5">
+                  {[
+                    { id: "name", label: "Your Name", placeholder: "John Smith", type: "text" },
+                    { id: "company", label: "Business / Agency Name", placeholder: "Smith Travel Ltd", type: "text" },
+                  ].map((f) => (
+                    <div key={f.id}>
+                      <label htmlFor={f.id} className="block text-xs font-black text-gray-600 uppercase tracking-wider mb-2">
+                        {f.label}
+                      </label>
+                      <input
+                        id={f.id}
+                        name={f.id}
+                        type={f.type}
+                        required
+                        value={form[f.id as keyof typeof form]}
+                        onChange={handleChange}
+                        placeholder={f.placeholder}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-5">
+                  {[
+                    { id: "email", label: "Contact Email", placeholder: "john@smithtravel.co.uk", type: "email" },
+                    { id: "phone", label: "Contact Number", placeholder: "+44 7700 900000", type: "tel" },
+                  ].map((f) => (
+                    <div key={f.id}>
+                      <label htmlFor={f.id} className="block text-xs font-black text-gray-600 uppercase tracking-wider mb-2">
+                        {f.label}
+                      </label>
+                      <input
+                        id={f.id}
+                        name={f.id}
+                        type={f.type}
+                        required
+                        value={form[f.id as keyof typeof form]}
+                        onChange={handleChange}
+                        placeholder={f.placeholder}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {status === "error" && (
+                  <p className="text-sm text-red-500 font-medium">
+                    Something went wrong. Please try emailing us directly at hello@infygru.com
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="w-full flex items-center justify-center gap-2.5 text-white font-black text-base py-4 rounded-xl transition-all duration-200 disabled:opacity-70"
+                  style={{
+                    background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
+                    boxShadow: "0 6px 28px rgba(37,99,235,0.35)",
+                  }}
+                >
+                  {status === "loading" ? (
+                    <><Loader2 className="w-5 h-5 animate-spin" /> Sending...</>
+                  ) : (
+                    <><Send className="w-4 h-4" /> Send My Enquiry</>
+                  )}
+                </button>
+
+                <p className="text-center text-xs text-gray-400">
+                  No spam. No commitment. We&apos;ll just have a friendly chat.
+                </p>
+              </form>
+            )}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   PAGE
+───────────────────────────────────────────── */
+
 export default function Page() {
   const [videoOpen, setVideoOpen] = useState(false);
   const { scrollYProgress } = useScroll();
@@ -186,7 +344,7 @@ export default function Page() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-[clamp(2.6rem,5.5vw,4.8rem)] font-black leading-[1.0] tracking-tight text-white mb-6"
+                className="text-[clamp(2rem,3.8vw,3.4rem)] font-black leading-[1.06] tracking-tight text-white mb-6"
               >
                 Get a Professional
                 <br />
@@ -202,7 +360,7 @@ export default function Page() {
                 Website for
                 <br />
                 <span
-                  className="text-transparent bg-clip-text underline decoration-amber-400/40 underline-offset-4"
+                  className="text-transparent bg-clip-text"
                   style={{
                     backgroundImage: "linear-gradient(90deg, #fbbf24, #f59e0b)",
                   }}
@@ -395,15 +553,14 @@ export default function Page() {
       </div>
 
       {/* ══════════════════════════════════════════
-          IS THIS YOU?
+          IS THIS YOU? — INFOGRAPHIC
       ══════════════════════════════════════════ */}
       <section className="py-28 px-6 bg-white relative overflow-hidden">
-        {/* subtle gradient blob */}
-        <ParallaxSection speed={0.12} className="absolute inset-0 pointer-events-none -z-0">
+        <ParallaxSection speed={0.12} className="absolute inset-0 pointer-events-none z-0">
           <div className="absolute top-10 right-[-10%] w-[500px] h-[500px] rounded-full bg-red-50/80 blur-[100px]" />
         </ParallaxSection>
 
-        <div className="max-w-4xl mx-auto relative z-10">
+        <div className="max-w-5xl mx-auto relative z-10">
           <Reveal className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-6">
               <AlertTriangle className="w-3.5 h-3.5" /> Does this sound familiar?
@@ -420,33 +577,117 @@ export default function Page() {
             </h2>
           </Reveal>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          {/* ── infographic grid ── */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
             {[
-              { emoji: "😤", text: "You check TBO, Akbar, MakeMyTrip separately just to give one quote" },
-              { emoji: "⏰", text: "A client messaged at 7pm. Nobody replied. They booked elsewhere by morning." },
-              { emoji: "📱", text: "Your bookings are split across WhatsApp, email, and a spreadsheet" },
-              { emoji: "💸", text: "You pay £200–£500/month for booking tools that don't even talk to each other" },
-              { emoji: "😰", text: "You've lost count of how many leads went cold because of slow follow-up" },
-              { emoji: "🤦", text: "You look less professional than bigger agencies — even though you're just as good" },
+              {
+                icon: "⏱️",
+                stat: "3 websites",
+                label: "to give one quote",
+                sub: "TBO, Akbar & MakeMyTrip — opened separately every single time",
+                color: "#ef4444",
+                bg: "linear-gradient(135deg, #fff5f5, #fef2f2)",
+                border: "#fecaca",
+              },
+              {
+                icon: "📉",
+                stat: "£400/mo",
+                label: "wasted on tools that don't talk",
+                sub: "Booking software, CRM, email tools — none of them connected",
+                color: "#f97316",
+                bg: "linear-gradient(135deg, #fff7ed, #ffedd5)",
+                border: "#fed7aa",
+              },
+              {
+                icon: "🚨",
+                stat: "7pm miss",
+                label: "costs you the client",
+                sub: "A client messaged after hours. No reply. They booked elsewhere by morning.",
+                color: "#dc2626",
+                bg: "linear-gradient(135deg, #fff5f5, #fef2f2)",
+                border: "#fca5a5",
+              },
             ].map((item, i) => (
-              <Reveal key={item.text} delay={i * 0.07}>
+              <Reveal key={item.stat} delay={i * 0.1}>
                 <motion.div
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="flex items-start gap-4 p-5 rounded-2xl border transition-all cursor-default"
-                  style={{
-                    background: "linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%)",
-                    borderColor: "#fecaca",
-                  }}
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 280, damping: 22 }}
+                  className="rounded-2xl p-7 border text-center cursor-default"
+                  style={{ background: item.bg, borderColor: item.border }}
                 >
-                  <span className="text-2xl leading-none mt-0.5 shrink-0">{item.emoji}</span>
-                  <p className="text-sm text-gray-700 leading-relaxed font-medium">{item.text}</p>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <div
+                    className="text-3xl font-black mb-1"
+                    style={{ color: item.color }}
+                  >
+                    {item.stat}
+                  </div>
+                  <div className="text-sm font-black text-gray-800 mb-3">{item.label}</div>
+                  <p className="text-xs text-gray-500 leading-relaxed">{item.sub}</p>
                 </motion.div>
               </Reveal>
             ))}
           </div>
 
-          <Reveal delay={0.3} className="mt-10 text-center">
+          {/* ── connector: before vs after ── */}
+          <Reveal delay={0.15}>
+            <div
+              className="rounded-3xl overflow-hidden border border-gray-200"
+              style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.06)" }}
+            >
+              <div className="grid md:grid-cols-2">
+                {/* BEFORE */}
+                <div className="p-8 bg-gray-50 border-b md:border-b-0 md:border-r border-gray-200">
+                  <div className="flex items-center gap-2 mb-5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                    <span className="text-xs font-black uppercase tracking-widest text-gray-400">Before</span>
+                  </div>
+                  <ul className="space-y-3">
+                    {[
+                      "Bookings scattered across WhatsApp, email & spreadsheets",
+                      "Manual follow-up — leads go cold over the weekend",
+                      "No professional website — you look smaller than you are",
+                      "Paying monthly for tools that still require manual work",
+                    ].map((t) => (
+                      <li key={t} className="flex items-start gap-3 text-sm text-gray-600">
+                        <span className="mt-0.5 w-5 h-5 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                          <span className="text-red-500 text-[10px] font-black">✕</span>
+                        </span>
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {/* AFTER */}
+                <div
+                  className="p-8"
+                  style={{ background: "linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%)" }}
+                >
+                  <div className="flex items-center gap-2 mb-5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                    <span className="text-xs font-black uppercase tracking-widest text-gray-400">After — with your platform</span>
+                  </div>
+                  <ul className="space-y-3">
+                    {[
+                      "One dashboard — every booking, every lead, every agent",
+                      "Auto WhatsApp & email sent the second someone enquires",
+                      "Professional branded website your competitors will envy",
+                      "One payment of £1,499 — no subscriptions, ever",
+                    ].map((t) => (
+                      <li key={t} className="flex items-start gap-3 text-sm text-gray-700">
+                        <span className="mt-0.5 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                          <span className="text-green-600 text-[10px] font-black">✓</span>
+                        </span>
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.25} className="mt-10 text-center">
             <p className="text-lg text-gray-500 font-medium">
               If even 2 of those hit home — keep reading. This was built for you.
             </p>
@@ -823,6 +1064,11 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+      {/* ══════════════════════════════════════════
+          ENQUIRY FORM
+      ══════════════════════════════════════════ */}
+      <EnquiryForm />
 
       {/* ══════════════════════════════════════════
           FINAL CTA
