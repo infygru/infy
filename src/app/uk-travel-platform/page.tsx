@@ -1,70 +1,21 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useInView,
-  AnimatePresence,
-  useSpring,
-} from "framer-motion";
-import {
-  ArrowRight,
-  Play,
-  X,
-  ExternalLink,
-  MapPin,
-  ArrowUpRight,
-  Clock,
-  TrendingUp,
-  Users,
-  MessageCircle,
-  CheckCircle,
-  XCircle,
-  PhoneCall,
-} from "lucide-react";
+import { motion, useInView, useScroll, useSpring, AnimatePresence } from "framer-motion";
+import { ArrowRight, CheckCircle, Phone, Star, X, Play, ExternalLink, MapPin, AlertTriangle, Zap, Clock, TrendingUp } from "lucide-react";
 
-/* ─── word reveal ──────────────────────────────────────────────── */
-function WordReveal({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) {
+function Reveal({ children, className = "", delay = 0, y = 32 }: { children: React.ReactNode; className?: string; delay?: number; y?: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   return (
-    <span ref={ref} className={className} aria-label={text}>
-      {text.split(" ").map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden mr-[0.22em] last:mr-0">
-          <motion.span
-            className="inline-block"
-            initial={{ y: "110%" }}
-            animate={inView ? { y: 0 } : {}}
-            transition={{ duration: 0.8, delay: delay + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
-          >{word}</motion.span>
-        </span>
-      ))}
-    </span>
+    <motion.div ref={ref} className={className}
+      initial={{ opacity: 0, y }} animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}>
+      {children}
+    </motion.div>
   );
 }
 
-/* ─── counter ──────────────────────────────────────────────────── */
-function Counter({ to, suffix = "", prefix = "" }: { to: number; suffix?: string; prefix?: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    let start: number | null = null;
-    const step = (ts: number) => {
-      if (!start) start = ts;
-      const p = Math.min((ts - start) / 1400, 1);
-      setVal(Math.round((1 - Math.pow(1 - p, 3)) * to));
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [inView, to]);
-  return <span ref={ref}>{prefix}{val}{suffix}</span>;
-}
-
-/* ─── video modal ──────────────────────────────────────────────── */
 function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   useEffect(() => {
     const fn = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -75,18 +26,15 @@ function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     <AnimatePresence>
       {open && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-2xl px-4"
-          onClick={onClose}>
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden"
-            onClick={e => e.stopPropagation()}>
-            <div className="w-full h-full bg-zinc-950 flex items-center justify-center text-zinc-600 text-sm">
-              {/* Replace with: <iframe src="YOUR_LOOM_OR_YOUTUBE_URL" className="w-full h-full" allowFullScreen /> */}
-              Paste your Loom or YouTube embed URL here
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-2xl px-4" onClick={onClose}>
+          <motion.div initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="w-full h-full bg-zinc-950 flex items-center justify-center text-zinc-500 text-sm">
+              {/* <iframe src="YOUR_LOOM_OR_YOUTUBE_EMBED_URL" className="w-full h-full" allowFullScreen /> */}
+              Paste your video embed URL here
             </div>
-            <button onClick={onClose} className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+            <button onClick={onClose} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
               <X className="w-4 h-4 text-white" />
             </button>
           </motion.div>
@@ -96,629 +44,487 @@ function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 }
 
-/* ─── marquee ──────────────────────────────────────────────────── */
-const marqueeText = ["Instant client quotes","Zero manual data entry","Automated WhatsApp follow-ups","More bookings. Less admin.","One dashboard for everything","Your brand. Your platform.","Live fare updates","Never lose a lead again"];
-function Marquee() {
-  return (
-    <div className="overflow-hidden bg-[#0C1524] py-4 border-y border-white/5">
-      <motion.div className="flex gap-12 whitespace-nowrap" animate={{ x: ["0%", "-50%"] }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }}>
-        {[...marqueeText, ...marqueeText].map((item, i) => (
-          <span key={i} className="text-xs font-bold uppercase tracking-[0.2em] text-white/25 flex items-center gap-12">
-            {item}<span className="text-white/10">✦</span>
-          </span>
-        ))}
-      </motion.div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PAGE
-═══════════════════════════════════════════════════════════════ */
 export default function Page() {
   const [videoOpen, setVideoOpen] = useState(false);
-
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 300, damping: 40 });
 
-  const heroRef = useRef(null);
-  const { scrollYProgress: heroProg } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(heroProg, [0, 1], ["0%", "30%"]);
-  const heroO = useTransform(heroProg, [0, 0.8], [1, 0]);
-
   return (
-    <div className="bg-[#FAF8F4] text-[#0C1524] overflow-x-hidden antialiased selection:bg-amber-200">
-
-      {/* progress bar */}
-      <motion.div style={{ scaleX }} className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 origin-left z-50 pointer-events-none" />
-
+    <div className="bg-white text-gray-900 overflow-x-hidden font-sans antialiased">
+      <motion.div style={{ scaleX }} className="fixed top-0 left-0 right-0 h-1 bg-blue-600 origin-left z-50 pointer-events-none" />
       <VideoModal open={videoOpen} onClose={() => setVideoOpen(false)} />
 
-      {/* ══════════════════════════════════════════════════════
-          HERO — outcome-first, no tech talk
-      ══════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col overflow-hidden bg-[#0C1524]">
+      {/* ── HERO ─── high-contrast, punchy, ad-style ── */}
+      <section className="relative bg-[#0A0F1E] overflow-hidden">
+        {/* diagonal accent */}
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600 clip-diagonal hidden lg:block" style={{ clipPath: "polygon(20% 0, 100% 0, 100% 100%, 0% 100%)" }} />
 
-        {/* subtle grid */}
-        <div className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)", backgroundSize: "60px 60px" }} />
-
-        {/* warm glow */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-amber-500/8 rounded-full blur-[140px]" />
-          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-orange-600/6 rounded-full blur-[100px]" />
-        </div>
-
-        {/* nav */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}
-          className="relative z-10 flex items-center justify-between px-8 md:px-16 py-8">
-          <span className="text-white/40 text-xs font-bold tracking-widest uppercase">Infygru</span>
-          <a href="#pricing" className="text-xs font-bold text-white/50 hover:text-white transition-colors tracking-widest uppercase border border-white/10 px-5 py-2.5 rounded-full hover:border-white/25">
-            Get Started
-          </a>
-        </motion.div>
-
-        {/* hero content */}
-        <div className="relative z-10 flex-1 flex flex-col justify-center px-8 md:px-16 max-w-6xl mx-auto w-full py-16">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/8 px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-amber-400 mb-10 self-start">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            UK Travel Agency Platform
-          </motion.div>
-
-          <h1 className="text-[clamp(2.8rem,7vw,6.5rem)] font-black leading-[0.95] tracking-[-0.03em] mb-8 text-white">
-            <span className="block"><WordReveal text="Your agency." delay={0.15} /></span>
-            <span className="block text-amber-400"><WordReveal text="Running itself." delay={0.3} /></span>
-          </h1>
-
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.65 }}
-            className="text-xl text-white/45 max-w-xl leading-relaxed font-light mb-12">
-            While your competitors are copying fares by hand and chasing leads on WhatsApp —
-            your agency quotes instantly, follows up automatically, and closes more bookings.
-          </motion.p>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.8 }}
-            className="flex flex-wrap items-center gap-4 mb-20">
-            <a href="#pricing" className="group inline-flex items-center gap-3 bg-amber-400 text-black font-black text-sm px-8 py-4 rounded-full hover:bg-amber-300 transition-colors shadow-[0_0_50px_rgba(251,191,36,0.2)]">
-              Get Your Platform Built <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
-            <button onClick={() => setVideoOpen(true)} className="inline-flex items-center gap-3 text-sm font-semibold text-white/50 hover:text-white/80 transition-colors">
-              <span className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:border-white/30 transition-colors">
-                <Play className="w-3.5 h-3.5 fill-white text-white ml-0.5" />
-              </span>
-              See a live demo
-            </button>
-          </motion.div>
-
-          {/* 3 outcome stats */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-            className="grid grid-cols-3 gap-8 max-w-lg">
-            {[
-              ["3 hrs", "saved per agent, per day"],
-              ["< 30s", "to confirm a new booking"],
-              ["0", "leads fall through the cracks"],
-            ].map(([val, label]) => (
-              <div key={val}>
-                <div className="text-2xl font-black text-white">{val}</div>
-                <div className="text-[11px] text-white/30 mt-1 leading-tight">{label}</div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* bottom preview strip */}
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          style={{ y: heroY, opacity: heroO }}
-          className="relative z-10 w-full max-w-5xl mx-auto px-8 md:px-16 pb-0"
-        >
-          <div className="rounded-t-2xl overflow-hidden border border-white/8 shadow-2xl">
-            <div className="flex items-center gap-2 px-5 py-3 bg-white/4 border-b border-white/6">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-400/60" /><span className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" /><span className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
-              <span className="mx-auto text-[10px] text-white/20 font-mono">yourtravelagency.com / dashboard</span>
-              <span className="flex items-center gap-1 text-emerald-400 text-[9px]"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />live</span>
-            </div>
-            <div className="bg-[#0d1117] grid grid-cols-4 gap-3 p-5">
-              {[
-                { l: "Bookings Today", v: "24", d: "+6 from yesterday", c: "text-emerald-400" },
-                { l: "Leads Waiting", v: "7", d: "Avg response: 28s", c: "text-amber-400" },
-                { l: "WhatsApp Sent", v: "31", d: "All automated", c: "text-sky-400" },
-                { l: "Revenue Today", v: "£8,240", d: "+22% this week", c: "text-violet-400" },
-              ].map(s => (
-                <div key={s.l} className="rounded-xl bg-white/3 border border-white/5 p-4">
-                  <p className="text-[9px] text-white/30 mb-2">{s.l}</p>
-                  <p className={`text-xl font-black ${s.c}`}>{s.v}</p>
-                  <p className="text-[8px] text-white/20 mt-1">{s.d}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </section>
-
-      <Marquee />
-
-      {/* ══════════════════════════════════════════════════════
-          THE REAL PROBLEM — speak their language
-      ══════════════════════════════════════════════════════ */}
-      <section className="bg-[#FAF8F4] py-32 px-8 md:px-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-2xl mb-20">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-              className="text-xs font-black uppercase tracking-[0.2em] text-amber-600 mb-5">The problem</motion.p>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-[#0C1524]">
-              <WordReveal text="You're losing bookings you don't even know about." />
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: Clock,
-                headline: "Your competitor confirmed it 90 minutes ago.",
-                body: "A client submits an enquiry. Your agent sees it 2 hours later — after lunch, after a call, after dealing with something else. That booking is already gone.",
-                stat: "2 hrs", statLabel: "average response time without automation",
-                color: "border-red-200 bg-red-50/50",
-                statColor: "text-red-500",
-              },
-              {
-                icon: Users,
-                headline: "Your best agent wastes 3 hours a day on copy-paste.",
-                body: "Checking TBO. Checking Akbar. Checking MakeMyTrip. Writing it all down. Sending it manually. Then doing it again for the next client. Every. Single. Day.",
-                stat: "160 hrs", statLabel: "per agent, per year, on manual fare lookups",
-                color: "border-orange-200 bg-orange-50/50",
-                statColor: "text-orange-500",
-              },
-              {
-                icon: MessageCircle,
-                headline: "You have no idea how many leads went cold.",
-                body: "A WhatsApp message at 9pm. Nobody sees it until morning. The client books with whoever replied first. You never knew it happened. There's no record, no follow-up, no second chance.",
-                stat: "40%", statLabel: "of travel leads never receive a timely follow-up",
-                color: "border-amber-200 bg-amber-50/50",
-                statColor: "text-amber-600",
-              },
-            ].map((card, i) => (
-              <motion.div
-                key={card.headline}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className={`rounded-3xl border p-8 ${card.color}`}
-              >
-                <card.icon className="w-6 h-6 text-[#0C1524]/30 mb-6" />
-                <h3 className="text-lg font-black text-[#0C1524] leading-tight mb-4">{card.headline}</h3>
-                <p className="text-sm text-[#0C1524]/50 leading-relaxed mb-8">{card.body}</p>
-                <div className="border-t border-black/8 pt-6">
-                  <div className={`text-3xl font-black ${card.statColor}`}>{card.stat}</div>
-                  <div className="text-[11px] text-[#0C1524]/35 mt-1 leading-tight">{card.statLabel}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          THE SHIFT — what changes, no jargon
-      ══════════════════════════════════════════════════════ */}
-      <section className="bg-[#0C1524] py-32 px-8 md:px-16 overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-2xl mb-20">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-xs font-black uppercase tracking-[0.2em] text-amber-400 mb-5">What changes</motion.p>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-white">
-              <WordReveal text="Here's what your agency looks like after." />
-            </h2>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              {
-                number: "01",
-                title: "A client enquires. They hear back in 30 seconds.",
-                desc: "The moment someone fills in your enquiry form or sends a WhatsApp — they get an instant confirmation. Your agent gets a notification with all the details. No checking. No delay. No lost leads.",
-                before: "Client emails at 6pm. Agent sees it at 9am. Competitor confirmed it by 6:30pm.",
-                after: "Client enquires at 6pm. Auto-confirmation sent at 6:00:30pm. Agent notified instantly.",
-                icon: PhoneCall,
-              },
-              {
-                number: "02",
-                title: "Live prices. Always accurate. No manual lookups.",
-                desc: "Your branded booking platform pulls live fares directly from your suppliers — updated constantly. Your agents quote confidently without opening a single other website.",
-                before: "Agent opens 3 supplier websites, copies prices into a spreadsheet, emails the client.",
-                after: "Agent sees all live fares in one place. Quotes in under a minute. Every time.",
-                icon: TrendingUp,
-              },
-              {
-                number: "03",
-                title: "Every lead, every booking, every agent — in one place.",
-                desc: "One dashboard shows you everything happening in your business right now. Who's working on what. Which leads need attention. How much revenue came in today. No spreadsheets. No chasing your team.",
-                before: "Bookings in one spreadsheet. Leads on WhatsApp. Revenue in another file. Nobody has the full picture.",
-                after: "Everything in one screen. Any device. Any time. Total visibility.",
-                icon: Users,
-              },
-              {
-                number: "04",
-                title: "Your platform. Your brand. Nobody else gets a cut.",
-                desc: "This isn't a subscription to someone else's software. It's your own platform, built on your terms, with your branding. A one-time investment — then it's yours forever with no monthly fees.",
-                before: "£300/month for booking software. £150/month for CRM. £80/month for WhatsApp tool. Still not connected.",
-                after: "One custom platform. One flat fee. £0 per month, forever.",
-                icon: CheckCircle,
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={item.number}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className="group rounded-3xl border border-white/6 bg-white/3 hover:bg-white/5 transition-all duration-500 p-8 md:p-10"
-              >
-                <div className="grid md:grid-cols-[1fr_1.2fr] gap-10 items-start">
-                  <div>
-                    <div className="flex items-start gap-5 mb-6">
-                      <span className="text-5xl font-black text-white/10 leading-none">{item.number}</span>
-                      <item.icon className="w-6 h-6 text-amber-400 mt-2 shrink-0" />
-                    </div>
-                    <h3 className="text-xl md:text-2xl font-black text-white leading-tight mb-4">{item.title}</h3>
-                    <p className="text-white/40 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="rounded-2xl bg-red-950/30 border border-red-500/15 p-5">
-                      <div className="flex items-center gap-2 mb-2">
-                        <XCircle className="w-3.5 h-3.5 text-red-400 shrink-0" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-red-400">Before</span>
-                      </div>
-                      <p className="text-sm text-white/35 leading-relaxed">{item.before}</p>
-                    </div>
-                    <div className="rounded-2xl bg-emerald-950/30 border border-emerald-500/15 p-5">
-                      <div className="flex items-center gap-2 mb-2">
-                        <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">After</span>
-                      </div>
-                      <p className="text-sm text-white/60 leading-relaxed">{item.after}</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          LIVE PLATFORMS — proof, framed as business results
-      ══════════════════════════════════════════════════════ */}
-      <section className="bg-[#FAF8F4] py-32 px-8 md:px-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-2xl mb-20">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-xs font-black uppercase tracking-[0.2em] text-amber-600 mb-5">Real agencies. Real results.</motion.p>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-[#0C1524]">
-              <WordReveal text="Two agencies already running on this." />
-            </h2>
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-              className="text-[#0C1524]/45 text-lg mt-4 font-light leading-relaxed">
-              Not demos. Not mockups. Live platforms booking real customers right now.
-            </motion.p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-8">
-            {[
-              {
-                url: "myperfecttrips.com",
-                href: "https://myperfecttrips.com",
-                name: "MyPerfectTrips",
-                location: "Manchester, United Kingdom",
-                headline: "Discover the World, Your Way",
-                sub: "Manchester's Premier Travel Agency",
-                accent: "#2563EB",
-                accentText: "text-blue-500",
-                accentBg: "bg-blue-600",
-                accentBorder: "border-blue-200",
-                accentLight: "bg-blue-50",
-                bg: "from-blue-900 via-slate-900 to-slate-950",
-                navItems: ["Holidays","Flights","Visa","MICE"],
-                destinations: ["Dubai","Turkey","Egypt","Paris","Maldives"],
-                stats: [["99%","Visa Success"],["50+","Destinations"],["24/7","Support"]],
-                result: "Processes over 140 booking enquiries a month — all automated, zero manual data entry.",
-                tags: ["Instant quotes","WhatsApp auto-replies","Live fare sync","Lead tracking"],
-              },
-              {
-                url: "igholidays.com",
-                href: "https://igholidays.com",
-                name: "IG Holidays",
-                location: "Chennai, India",
-                headline: "Best Holiday Packages & Flights",
-                sub: "Chennai's Best Travel Agency",
-                accent: "#D97706",
-                accentText: "text-amber-600",
-                accentBg: "bg-amber-500",
-                accentBorder: "border-amber-200",
-                accentLight: "bg-amber-50",
-                bg: "from-amber-900/60 via-stone-900 to-stone-950",
-                navItems: ["Packages","Flights","Honeymoon","MICE"],
-                destinations: ["Maldives","Bali","Europe","Singapore","Dubai"],
-                stats: [["50+","Destinations"],["10k+","Clients"],["B2B","Ready"]],
-                result: "Serves 10,000+ clients with zero extra admin staff — every follow-up and confirmation is automatic.",
-                tags: ["Auto-confirmations","Agent dashboard","Lead scoring","Revenue tracking"],
-              },
-            ].map((site, si) => {
-              const ref = useRef(null);
-              const inView = useInView(ref, { once: true, margin: "-60px" });
-              return (
-                <motion.div
-                  ref={ref}
-                  key={site.url}
-                  initial={{ opacity: 0, y: 60 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.8, delay: si * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  className="rounded-3xl border border-[#0C1524]/8 bg-white shadow-xl shadow-[#0C1524]/5 overflow-hidden hover:-translate-y-1 transition-transform duration-500"
-                >
-                  {/* browser */}
-                  <div className="flex items-center gap-2 px-5 py-3.5 bg-zinc-50 border-b border-zinc-100">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-400" /><span className="w-2.5 h-2.5 rounded-full bg-yellow-400" /><span className="w-2.5 h-2.5 rounded-full bg-green-400" />
-                    <div className="ml-3 flex-1 bg-white border border-zinc-200 rounded-md px-3 py-1 text-[10px] text-zinc-400 font-mono">{site.url}</div>
-                    <a href={site.href} target="_blank" rel="noopener noreferrer" className="text-zinc-300 hover:text-zinc-700 transition-colors"><ExternalLink className="w-3.5 h-3.5" /></a>
-                  </div>
-                  {/* mockup */}
-                  <div className={`relative h-[240px] bg-gradient-to-br ${site.bg} overflow-hidden`}>
-                    <div className="relative px-6 pt-5">
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="font-black text-[11px]" style={{ color: site.accent }}>{site.name}</span>
-                        <div className="flex gap-4 text-[9px] text-white/30">{site.navItems.map(t=><span key={t}>{t}</span>)}</div>
-                      </div>
-                      <p className="text-[9px] uppercase tracking-widest mb-2" style={{ color: site.accent }}>{site.sub}</p>
-                      <h3 className="text-xl font-black text-white leading-tight mb-3">{site.headline}</h3>
-                      <div className="flex gap-2 mb-3">
-                        <span className={`px-3 py-1.5 text-[8px] font-black uppercase text-black rounded ${site.accentBg}`}>Book Now</span>
-                        <span className="px-3 py-1.5 text-[8px] uppercase border border-white/10 text-white/50 rounded">View Packages</span>
-                      </div>
-                      <div className="flex gap-1.5 flex-wrap">
-                        {site.destinations.map(d=><span key={d} className="px-2 py-0.5 bg-white/5 border border-white/8 text-[8px] text-white/35 rounded-full">{d}</span>)}
-                      </div>
-                    </div>
-                    <div className="absolute bottom-0 inset-x-0 grid grid-cols-3 border-t border-white/8 bg-black/40 backdrop-blur">
-                      {site.stats.map(([v,l])=>(
-                        <div key={l} className="py-2.5 text-center border-r border-white/8 last:border-0">
-                          <div className="text-[11px] font-bold" style={{ color: site.accent }}>{v}</div>
-                          <div className="text-[8px] text-white/25">{l}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  {/* body */}
-                  <div className="p-7">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="font-black text-lg text-[#0C1524]">{site.name}</h3>
-                        <p className="text-xs text-[#0C1524]/35 mt-0.5 flex items-center gap-1.5"><MapPin className="w-3 h-3"/>{site.location}</p>
-                      </div>
-                      <a href={site.href} target="_blank" rel="noopener noreferrer"
-                        className={`inline-flex items-center gap-1.5 text-xs font-bold border rounded-full px-4 py-2 transition-colors ${site.accentBorder} ${site.accentLight} ${site.accentText}`}>
-                        Visit <ArrowUpRight className="w-3 h-3"/>
-                      </a>
-                    </div>
-                    <p className="text-sm text-[#0C1524]/55 leading-relaxed mb-5 font-medium">{site.result}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {site.tags.map(t=>(
-                        <span key={t} className="text-[11px] font-semibold px-3 py-1.5 rounded-full bg-[#0C1524]/5 text-[#0C1524]/50">{t}</span>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          VIDEO DEMO
-      ══════════════════════════════════════════════════════ */}
-      <section className="bg-[#0C1524] py-32 px-8 md:px-16">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-14">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-xs font-black uppercase tracking-[0.2em] text-amber-400 mb-5">See it for yourself</motion.p>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-4">
-              <WordReveal text="Watch it in action." />
-            </h2>
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-              className="text-white/35 text-lg font-light">A 3-minute walkthrough of a real travel agency platform — from client enquiry to booking confirmation.</motion.p>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="relative rounded-3xl overflow-hidden cursor-pointer group border border-white/8"
-            onClick={() => setVideoOpen(true)}
-          >
-            <div className="relative aspect-video bg-[#0d1117]">
-              <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(ellipse 50% 40% at 50% 30%, rgba(251,191,36,0.08), transparent)" }} />
-              {/* dashboard preview */}
-              <div className="absolute inset-8 rounded-2xl bg-[#161b22] border border-white/5 overflow-hidden">
-                <div className="flex items-center gap-2 px-4 py-3 bg-white/3 border-b border-white/5">
-                  <span className="w-2 h-2 rounded-full bg-red-400/60"/><span className="w-2 h-2 rounded-full bg-yellow-400/60"/><span className="w-2 h-2 rounded-full bg-green-400/60"/>
-                  <span className="mx-auto text-[9px] text-white/15 font-mono">yourtravelagency.com / dashboard</span>
-                </div>
-                <div className="p-4 grid grid-cols-4 gap-3">
-                  {[["24","Bookings","text-emerald-400"],["7","Leads","text-amber-400"],["£8,240","Revenue","text-violet-400"],["31","WhatsApp","text-sky-400"]].map(([v,l,c])=>(
-                    <div key={l} className="bg-white/3 rounded-lg p-3 border border-white/4">
-                      <p className="text-[8px] text-white/25 mb-1">{l}</p>
-                      <p className={`text-base font-black ${c}`}>{v}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* overlay */}
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
-                <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }} className="flex flex-col items-center gap-5">
-                  <div className="w-20 h-20 rounded-full bg-amber-400 flex items-center justify-center shadow-[0_0_60px_rgba(251,191,36,0.3)]">
-                    <Play className="w-7 h-7 fill-black text-black ml-1" />
-                  </div>
-                  <span className="bg-black/60 backdrop-blur-sm border border-white/10 rounded-full px-5 py-2.5 text-sm font-bold text-white uppercase tracking-wide">Watch Demo — 3 minutes</span>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          HOW IT WORKS — 3 simple steps
-      ══════════════════════════════════════════════════════ */}
-      <section className="bg-[#FAF8F4] py-32 px-8 md:px-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-2xl mb-20">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-xs font-black uppercase tracking-[0.2em] text-amber-600 mb-5">How it works</motion.p>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-[#0C1524]">
-              <WordReveal text="Simple. Fast. Yours." />
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                step: "01",
-                title: "We understand your business.",
-                body: "A 30-minute call where we map out exactly how your agency works today — your suppliers, your team, your enquiry process. No generic solution.",
-                cta: "Book a call",
-              },
-              {
-                step: "02",
-                title: "We build your platform.",
-                body: "In 2–4 weeks, you get a fully working platform with your branding, your suppliers connected, and your automations running. You're involved at every step.",
-                cta: "See timeline",
-              },
-              {
-                step: "03",
-                title: "You own it forever.",
-                body: "No monthly fees. No subscriptions. No vendor lock-in. Your platform lives on your own servers. You can modify it, scale it, or hand it to any developer.",
-                cta: "See pricing",
-              },
-            ].map((s, i) => (
-              <motion.div
-                key={s.step}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
-                className="relative"
-              >
-                {i < 2 && <div className="hidden md:block absolute top-10 left-full w-6 h-px bg-[#0C1524]/10 z-10" />}
-                <div className="rounded-3xl border border-[#0C1524]/8 bg-white p-8 shadow-lg shadow-[#0C1524]/4 h-full">
-                  <div className="text-6xl font-black text-[#0C1524]/6 leading-none mb-6">{s.step}</div>
-                  <h3 className="text-xl font-black text-[#0C1524] leading-tight mb-4">{s.title}</h3>
-                  <p className="text-sm text-[#0C1524]/45 leading-relaxed">{s.body}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          NUMBERS
-      ══════════════════════════════════════════════════════ */}
-      <section className="bg-[#0C1524] py-24 px-8 md:px-16">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-10">
-          {[
-            { to: 48, suffix: "h", label: "From briefing to a live staging environment" },
-            { to: 30, suffix: "s", label: "Average time to auto-confirm an enquiry" },
-            { to: 3, suffix: " hrs", label: "Saved per agent per day" },
-            { to: 0, suffix: "/mo", prefix: "£", label: "Monthly fees after setup" },
-          ].map((item, i) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.7 }}
-              className="text-center"
-            >
-              <div className="text-4xl md:text-5xl font-black text-amber-400 mb-2">
-                <Counter to={item.to} suffix={item.suffix} prefix={item.prefix ?? ""} />
-              </div>
-              <p className="text-[11px] text-white/25 leading-tight">{item.label}</p>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center min-h-screen">
+          {/* LEFT — copy */}
+          <div>
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 bg-yellow-400 text-black text-[11px] font-black uppercase tracking-widest px-4 py-2 rounded-full mb-8">
+              <Zap className="w-3.5 h-3.5" /> Limited — 3 agencies per month
             </motion.div>
-          ))}
-        </div>
-      </section>
 
-      {/* ══════════════════════════════════════════════════════
-          PRICING
-      ══════════════════════════════════════════════════════ */}
-      <section id="pricing" className="bg-[#FAF8F4] py-32 px-8 md:px-16">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-xs font-black uppercase tracking-[0.2em] text-amber-600 mb-5">Investment</motion.p>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tight text-[#0C1524] leading-tight mb-5">
-              <WordReveal text="One flat fee. Yours forever." />
-            </h2>
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-              className="text-[#0C1524]/40 text-lg font-light max-w-lg mx-auto">
-              No subscriptions. No per-booking fees. No contracts. You pay once and the platform is completely yours.
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[clamp(2.6rem,6vw,5rem)] font-black leading-[1.0] tracking-tight text-white mb-6">
+              Get a Professional<br />
+              <span className="text-yellow-400">Travel Booking</span><br />
+              Website for<br />
+              <span className="text-yellow-400 underline decoration-yellow-400/40 underline-offset-4">£1,499.</span>
+            </motion.h1>
+
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-lg text-white/60 leading-relaxed mb-10 max-w-lg">
+              A fully custom travel booking platform — your brand, your prices, your clients.
+              Bookings confirmed automatically, leads never missed, zero monthly fees.
             </motion.p>
+
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.45 }}
+              className="flex flex-col sm:flex-row gap-4 mb-10">
+              <a href="#claim" className="group inline-flex items-center justify-center gap-3 bg-yellow-400 hover:bg-yellow-300 text-black font-black text-base px-8 py-4 rounded-xl transition-all duration-200 shadow-[0_8px_32px_rgba(234,179,8,0.4)] hover:shadow-[0_12px_40px_rgba(234,179,8,0.5)] hover:-translate-y-0.5">
+                Claim Your Spot Now <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </a>
+              <button onClick={() => setVideoOpen(true)} className="inline-flex items-center justify-center gap-2.5 border-2 border-white/20 text-white font-bold text-sm px-6 py-4 rounded-xl hover:border-white/40 transition-colors">
+                <Play className="w-4 h-4 fill-white" /> Watch 3-Min Demo
+              </button>
+            </motion.div>
+
+            {/* trust signals */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
+              className="flex flex-wrap gap-6">
+              {[
+                "✓ Live in 2–4 weeks",
+                "✓ Zero monthly fees",
+                "✓ You own it 100%",
+                "✓ UK-based support",
+              ].map(t => (
+                <span key={t} className="text-sm text-white/40 font-medium">{t}</span>
+              ))}
+            </motion.div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-3xl bg-[#0C1524] overflow-hidden"
-          >
-            <div className="p-10 md:p-14">
-              <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 pb-10 border-b border-white/8">
+          {/* RIGHT — offer card */}
+          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10">
+            <div className="bg-white rounded-3xl p-8 shadow-[0_32px_80px_rgba(0,0,0,0.4)]">
+              <div className="flex items-center justify-between mb-6 pb-6 border-b border-gray-100">
                 <div>
-                  <div className="text-8xl font-black text-white leading-none">£1,499</div>
-                  <div className="text-white/30 text-sm mt-2">One payment. Complete ownership.</div>
+                  <div className="text-sm text-gray-400 font-medium mb-1">Complete Travel Platform</div>
+                  <div className="text-5xl font-black text-gray-900">£1,499</div>
+                  <div className="text-sm text-green-600 font-bold mt-1">One-time. No monthly fees ever.</div>
                 </div>
-                <div className="flex flex-col gap-2 text-sm text-white/40">
-                  <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400"/>No monthly fees</span>
-                  <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400"/>No per-booking charges</span>
-                  <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-emerald-400"/>No contracts or lock-in</span>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400 line-through mb-1">Usually £4,000+</div>
+                  <div className="bg-red-100 text-red-600 text-xs font-black px-3 py-1.5 rounded-full">SAVE £2,500+</div>
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4 mb-10">
+              <div className="space-y-3 mb-8">
                 {[
-                  "Your own branded booking website",
-                  "All your suppliers connected and live",
-                  "Automatic WhatsApp & email confirmations",
-                  "One dashboard for every booking and lead",
-                  "Agent management and performance tracking",
-                  "Everything set up and handed over to you",
-                ].map((d) => (
-                  <div key={d} className="flex items-start gap-3">
-                    <CheckCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                    <span className="text-sm text-white/55 leading-snug">{d}</span>
+                  "Custom branded booking website",
+                  "Live prices from your suppliers",
+                  "Auto WhatsApp & email confirmations",
+                  "Admin dashboard — all bookings in one place",
+                  "Never lose a lead again",
+                  "Set up, trained, handed over to you",
+                ].map(item => (
+                  <div key={item} className="flex items-center gap-3 text-sm text-gray-700">
+                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                    {item}
                   </div>
                 ))}
               </div>
 
-              <a
-                href="mailto:hello@infygru.com?subject=UK Travel Platform — I want to get started"
-                className="group w-full flex items-center justify-center gap-3 rounded-2xl bg-amber-400 text-black font-black text-base px-8 py-5 hover:bg-amber-300 transition-colors shadow-[0_0_60px_rgba(251,191,36,0.15)] mb-5"
-              >
-                Get Your Platform Built
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <a href="mailto:hello@infygru.com?subject=UK Travel Platform — Book My Spot"
+                className="group w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black text-base px-6 py-4 rounded-xl transition-all duration-200 mb-3">
+                Book My Spot — £1,499 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
-              <p className="text-white/20 text-xs text-center">We reply within 24 hours · Free 30-minute discovery call · Maximum 3 agencies per month</p>
+              <p className="text-center text-xs text-gray-400">Free 30-min discovery call · No commitment</p>
+            </div>
+
+            {/* floating badge */}
+            <div className="absolute -top-4 -right-4 bg-red-600 text-white text-[11px] font-black uppercase tracking-wide px-4 py-2 rounded-full shadow-lg rotate-3">
+              Only 3 spots/month
             </div>
           </motion.div>
         </div>
       </section>
 
-      <div className="bg-[#FAF8F4] border-t border-[#0C1524]/8 px-8 md:px-16 py-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <span className="text-xs text-[#0C1524]/30">© {new Date().getFullYear()} Infygru · UK Travel Agency Platform</span>
-        <span className="text-xs text-[#0C1524]/30">hello@infygru.com</span>
+      {/* ── SOCIAL PROOF BAR ── */}
+      <div className="bg-gray-50 border-y border-gray-200 py-6 px-6">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-8 md:gap-16">
+          {[
+            { stat: "2 agencies", label: "already live in the UK" },
+            { stat: "£0/mo", label: "ongoing fees after setup" },
+            { stat: "48 hrs", label: "to see your platform live" },
+            { stat: "100%", label: "yours — you own all the code" },
+          ].map(({ stat, label }) => (
+            <div key={stat} className="text-center">
+              <div className="text-2xl font-black text-gray-900">{stat}</div>
+              <div className="text-xs text-gray-400 mt-0.5">{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── IS THIS YOU? ── relatable pain points ── */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <Reveal className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-6">
+              <AlertTriangle className="w-3.5 h-3.5" /> Does this sound familiar?
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 leading-tight">
+              You're running your travel agency<br />
+              <span className="text-red-500">the hard way.</span>
+            </h2>
+          </Reveal>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              { emoji: "😤", text: "You check TBO, Akbar, MakeMyTrip separately just to give one quote" },
+              { emoji: "⏰", text: "A client messaged at 7pm. Nobody replied. They booked elsewhere by morning." },
+              { emoji: "📱", text: "Your bookings are split across WhatsApp, email, and a spreadsheet" },
+              { emoji: "💸", text: "You pay £200–£500/month for booking tools that don't even talk to each other" },
+              { emoji: "😰", text: "You've lost count of how many leads went cold because of slow follow-up" },
+              { emoji: "🤦", text: "You look less professional than bigger agencies — even though you're just as good" },
+            ].map((item, i) => (
+              <Reveal key={item.text} delay={i * 0.06}>
+                <div className="flex items-start gap-4 p-5 rounded-2xl bg-red-50 border border-red-100 hover:border-red-200 transition-colors">
+                  <span className="text-2xl leading-none mt-0.5">{item.emoji}</span>
+                  <p className="text-sm text-gray-700 leading-relaxed font-medium">{item.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={0.3} className="mt-10 text-center">
+            <p className="text-lg text-gray-500 font-medium">
+              If even 2 of those hit home — keep reading. This was built for you.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── WHAT YOU GET ── simple, clear ── */}
+      <section className="py-24 px-6 bg-blue-600">
+        <div className="max-w-5xl mx-auto">
+          <Reveal className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
+              What you get for £1,499
+            </h2>
+            <p className="text-blue-200 text-lg font-light">Everything your agency needs. Nothing you don't.</p>
+          </Reveal>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              {
+                icon: "🌐",
+                title: "Your own booking website",
+                desc: "Fully branded with your logo and colours. Looks completely professional — your clients will never know it was built in weeks.",
+              },
+              {
+                icon: "⚡",
+                title: "Instant client confirmations",
+                desc: "The second someone enquires — they get a WhatsApp message and an email. Your staff get notified. No delays. No missed leads.",
+              },
+              {
+                icon: "💷",
+                title: "Live prices, always accurate",
+                desc: "Your platform pulls live fares directly. No more opening 3 websites to give a quote. Your agents see everything in one screen.",
+              },
+              {
+                icon: "📊",
+                title: "One dashboard for everything",
+                desc: "Every booking, every lead, every agent — in one place. See your revenue, your pipeline, who needs follow-up. Total control.",
+              },
+              {
+                icon: "🔒",
+                title: "Yours forever, no monthly fees",
+                desc: "This isn't software you rent. It's yours. Hosted on your own servers. No subscriptions. No platform can pull the rug.",
+              },
+              {
+                icon: "🚀",
+                title: "Live in 2–4 weeks",
+                desc: "We handle everything — build, setup, training. In a month you'll have a platform your competitors will think cost £15,000.",
+              },
+            ].map((item, i) => (
+              <Reveal key={item.title} delay={i * 0.07}>
+                <div className="bg-white/10 backdrop-blur rounded-2xl p-7 border border-white/15 hover:bg-white/15 transition-colors h-full">
+                  <span className="text-3xl mb-4 block">{item.icon}</span>
+                  <h3 className="text-white font-black text-lg mb-3">{item.title}</h3>
+                  <p className="text-blue-100 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── LIVE PROOF ── two real agencies ── */}
+      <section className="py-24 px-6 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <Reveal className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-6">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Live right now
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 leading-tight mb-4">
+              We already built this for two agencies.
+            </h2>
+            <p className="text-gray-500 text-lg font-light">Both are live. Both are booking real clients. Go see them.</p>
+          </Reveal>
+
+          <div className="grid lg:grid-cols-2 gap-8">
+            {[
+              {
+                name: "MyPerfectTrips",
+                url: "myperfecttrips.com",
+                href: "https://myperfecttrips.com",
+                location: "Manchester, UK",
+                tagline: "Manchester's Premier Travel Agency",
+                description: "Holiday packages, visa management, MICE, and corporate travel. Fully automated — 140+ enquiries a month handled without extra staff.",
+                highlight: "140+ bookings/month, zero extra staff",
+                bg: "from-blue-600 to-blue-900",
+                accent: "bg-blue-600",
+                star: "⭐",
+              },
+              {
+                name: "IG Holidays",
+                url: "igholidays.com",
+                href: "https://igholidays.com",
+                location: "Chennai, India",
+                tagline: "10,000+ happy clients served",
+                description: "International and domestic packages, honeymoons, corporate travel. Every confirmation and follow-up is automatic.",
+                highlight: "10,000+ clients, all automations running",
+                bg: "from-amber-500 to-orange-700",
+                accent: "bg-amber-500",
+                star: "⭐",
+              },
+            ].map((site, i) => (
+              <Reveal key={site.name} delay={i * 0.1}>
+                <div className="bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-xl shadow-gray-200/60 hover:-translate-y-1 transition-transform duration-300">
+                  {/* header */}
+                  <div className={`bg-gradient-to-br ${site.bg} p-8 text-white`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-2xl font-black">{site.name}</h3>
+                        <p className="text-white/60 text-sm flex items-center gap-1 mt-1"><MapPin className="w-3 h-3" />{site.location}</p>
+                      </div>
+                      <a href={site.href} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors border border-white/20">
+                        Visit Live <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                    <p className="text-white/80 text-sm font-medium leading-relaxed">{site.tagline}</p>
+                  </div>
+                  {/* body */}
+                  <div className="p-7">
+                    <p className="text-gray-600 text-sm leading-relaxed mb-5">{site.description}</p>
+                    <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                      <TrendingUp className="w-4 h-4 text-green-600 shrink-0" />
+                      <span className="text-sm text-green-700 font-bold">{site.highlight}</span>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── VIDEO DEMO ── */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <Reveal className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">See exactly what you're getting.</h2>
+            <p className="text-gray-500 text-lg">3-minute video. Real platform. Real bookings being processed.</p>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="relative rounded-2xl overflow-hidden cursor-pointer group border-2 border-gray-200 hover:border-blue-400 transition-colors shadow-xl"
+              onClick={() => setVideoOpen(true)}>
+              <div className="aspect-video bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center">
+                {/* dashboard preview */}
+                <div className="absolute inset-0 opacity-30">
+                  <div className="absolute inset-6 rounded-xl bg-gray-900 border border-white/10 overflow-hidden">
+                    <div className="bg-gray-800 px-4 py-3 flex items-center gap-2 border-b border-white/5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+                      <span className="mx-auto text-[10px] text-white/30 font-mono">yourtravelagency.com/dashboard</span>
+                    </div>
+                    <div className="p-4 grid grid-cols-4 gap-2">
+                      {[["24","Bookings"],["£8,240","Revenue"],["7","Leads"],["31","Sent"]].map(([v,l])=>(
+                        <div key={l} className="bg-white/5 rounded-lg p-3">
+                          <p className="text-[8px] text-white/30 mb-1">{l}</p>
+                          <p className="text-base font-black text-white">{v}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                {/* play */}
+                <div className="relative z-10 flex flex-col items-center gap-4">
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
+                    className="w-20 h-20 rounded-full bg-blue-600 group-hover:bg-blue-500 transition-colors flex items-center justify-center shadow-[0_0_50px_rgba(37,99,235,0.5)]">
+                    <Play className="w-7 h-7 fill-white text-white ml-1" />
+                  </motion.div>
+                  <span className="text-white font-bold text-sm tracking-wide">Watch Demo — 3 Minutes</span>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── HOW FAST ── timeline ── */}
+      <section className="py-24 px-6 bg-gray-900">
+        <div className="max-w-4xl mx-auto">
+          <Reveal className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
+              From "yes" to live in <span className="text-yellow-400">under 4 weeks.</span>
+            </h2>
+            <p className="text-gray-400 text-lg">Here's exactly what happens after you get in touch.</p>
+          </Reveal>
+
+          <div className="relative">
+            {/* line */}
+            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-700 hidden md:block" />
+
+            <div className="space-y-8">
+              {[
+                { day: "Day 1", icon: "📞", title: "Free discovery call", desc: "30 minutes. We understand your business — your suppliers, your clients, how you work today." },
+                { day: "Day 2–3", icon: "📋", title: "We send you a plan", desc: "Exactly what we'll build, what it'll look like, and a clear timeline. No surprises." },
+                { day: "Week 1–2", icon: "⚙️", title: "We build your platform", desc: "Your branded booking site, your admin dashboard, all your automations configured and tested." },
+                { day: "Week 3–4", icon: "🚀", title: "You go live", desc: "We train you and your team, hand over everything, and you're live. Done. No ongoing fees." },
+              ].map((step, i) => (
+                <Reveal key={step.day} delay={i * 0.1}>
+                  <div className="flex gap-6 md:pl-12">
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-full bg-gray-800 border-2 border-gray-600 flex items-center justify-center text-xl shrink-0 md:absolute md:-left-[3.75rem] md:top-0">
+                        {step.icon}
+                      </div>
+                    </div>
+                    <div className="flex-1 bg-gray-800 rounded-2xl p-6 border border-gray-700">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-yellow-400 text-xs font-black uppercase tracking-widest">{step.day}</span>
+                      </div>
+                      <h3 className="text-white font-black text-lg mb-2">{step.title}</h3>
+                      <p className="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── OBJECTIONS ── handle the doubts ── */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <Reveal className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">Questions we always get.</h2>
+          </Reveal>
+          <div className="space-y-4">
+            {[
+              {
+                q: "£1,499 sounds too cheap. What's the catch?",
+                a: "No catch. We keep our prices fair because we want long-term relationships with agencies — not a one-time transaction. We also limit to 3 agencies per month so quality never drops.",
+              },
+              {
+                q: "What if I'm not tech-savvy at all?",
+                a: "Perfect — this is built for business owners, not tech people. We handle everything and train you. If you can use WhatsApp, you can run your platform.",
+              },
+              {
+                q: "What about ongoing support?",
+                a: "2 weeks of handover support is included. After that, because you own the platform outright, you can use any developer — or come back to us. No lock-in.",
+              },
+              {
+                q: "How is this different from just using booking.com or a third-party portal?",
+                a: "With portals, they take a cut of every booking, own your customer data, and you build their brand — not yours. This platform is 100% yours. Your clients, your data, your profit.",
+              },
+              {
+                q: "Will it actually work for my suppliers?",
+                a: "We connect directly to TBO Holidays, Akbar Online, and MakeMyTrip B2B. If you use other suppliers, we'll discuss on the call — we can integrate most APIs.",
+              },
+            ].map((item, i) => (
+              <Reveal key={item.q} delay={i * 0.05}>
+                <details className="group border border-gray-200 rounded-2xl overflow-hidden cursor-pointer">
+                  <summary className="flex items-center justify-between gap-4 px-7 py-5 font-black text-gray-900 text-sm md:text-base hover:bg-gray-50 transition-colors list-none">
+                    {item.q}
+                    <span className="w-6 h-6 rounded-full bg-gray-100 group-open:bg-blue-100 flex items-center justify-center shrink-0 text-gray-400 group-open:text-blue-600 transition-colors font-black text-sm">+</span>
+                  </summary>
+                  <div className="px-7 pb-6 text-sm text-gray-500 leading-relaxed border-t border-gray-100 pt-5">
+                    {item.a}
+                  </div>
+                </details>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ── aggressive, urgent ── */}
+      <section id="claim" className="py-24 px-6 bg-[#0A0F1E]">
+        <div className="max-w-3xl mx-auto text-center">
+          <Reveal>
+            <div className="inline-flex items-center gap-2 bg-red-500/15 border border-red-500/25 text-red-400 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-8">
+              <Clock className="w-3.5 h-3.5" /> Only 3 spots available this month
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight mb-6">
+              Stop watching clients<br />
+              go to your competitors.
+            </h2>
+            <p className="text-white/45 text-xl font-light leading-relaxed mb-12 max-w-xl mx-auto">
+              For £1,499 — once — you get a professional travel platform that works around the clock. Your competitors pay £400/month. Forever. You pay once.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="bg-white rounded-3xl p-8 md:p-12 text-left">
+              <div className="flex items-center justify-between flex-wrap gap-4 mb-8 pb-8 border-b border-gray-100">
+                <div>
+                  <div className="text-gray-400 text-sm mb-1">Complete Travel Platform</div>
+                  <div className="text-6xl font-black text-gray-900">£1,499</div>
+                  <div className="text-green-600 font-bold text-sm mt-1">One payment. Yours forever.</div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {[["✓ Live in 2–4 weeks"],["✓ Zero monthly fees"],["✓ 100% your platform"],["✓ Full training included"]].map(([t])=>(
+                    <span key={t} className="text-sm text-gray-600 font-medium">{t}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-3 mb-8">
+                {["Custom branded booking website","Live fares from all your suppliers","Auto WhatsApp & email confirmations","Admin dashboard — everything in one view","Agent management tools","2 weeks of setup support included"].map(item => (
+                  <div key={item} className="flex items-center gap-2.5 text-sm text-gray-700">
+                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a href="mailto:hello@infygru.com?subject=I want to claim my travel platform spot — £1499"
+                  className="group flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black text-base px-8 py-5 rounded-xl transition-all duration-200 shadow-[0_8px_32px_rgba(37,99,235,0.3)]">
+                  Claim My Spot — Email Us <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </a>
+                <a href="https://wa.me/918300290019?text=Hi%2C+I%27m+interested+in+the+%C2%A31%2C499+travel+platform"
+                  target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-black text-base px-8 py-5 rounded-xl transition-all duration-200">
+                  <Phone className="w-5 h-5" /> WhatsApp Us
+                </a>
+              </div>
+              <p className="text-center text-xs text-gray-400 mt-4">hello@infygru.com · Free 30-min discovery call · No hard sell, no commitment</p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <div className="bg-[#0A0F1E] border-t border-white/5 px-6 py-6 text-center text-xs text-white/20">
+        © {new Date().getFullYear()} Infygru · UK Travel Platform · hello@infygru.com
       </div>
     </div>
   );
