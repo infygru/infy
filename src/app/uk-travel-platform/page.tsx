@@ -11,7 +11,7 @@ import {
 import {
   ArrowRight,
   ArrowUpRight,
-  CheckCircle2,
+  CircleCheck,
   Play,
   X,
   ExternalLink,
@@ -631,7 +631,7 @@ export default function UKTravelPlatformPage() {
               {gains.map((g, i) => (
                 <Reveal key={g} delay={i * 0.07}>
                   <div className="flex items-start gap-5 py-6">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                    <CircleCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                     <p className="text-sm text-zinc-300 leading-relaxed">{g}</p>
                   </div>
                 </Reveal>
