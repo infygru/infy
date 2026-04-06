@@ -127,6 +127,83 @@ function VideoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
    ENQUIRY FORM
 ───────────────────────────────────────────── */
 
+/* Compact form used inline inside the hero card */
+function HeroEnquiryForm() {
+  const [form, setForm] = useState({ name: "", email: "", phone: "", company: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/uk-travel-enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("success");
+      setForm({ name: "", email: "", phone: "", company: "" });
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "success")
+    return (
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-8 text-center">
+        <div className="text-4xl mb-3">🎉</div>
+        <h3 className="text-lg font-black text-gray-900 mb-1">We&apos;ve got your details!</h3>
+        <p className="text-gray-500 text-sm">We&apos;ll be in touch within 24 hours.</p>
+      </motion.div>
+    );
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        {[
+          { id: "h-name", name: "name", label: "Your Name", placeholder: "John Smith", type: "text" },
+          { id: "h-company", name: "company", label: "Agency Name", placeholder: "Smith Travel Ltd", type: "text" },
+          { id: "h-email", name: "email", label: "Email", placeholder: "john@smithtravel.co.uk", type: "email" },
+          { id: "h-phone", name: "phone", label: "Phone", placeholder: "+44 7700 900000", type: "tel" },
+        ].map((f) => (
+          <div key={f.id}>
+            <label htmlFor={f.id} className="block text-[10px] font-black text-gray-500 uppercase tracking-wider mb-1.5">
+              {f.label}
+            </label>
+            <input
+              id={f.id}
+              name={f.name}
+              type={f.type}
+              required
+              value={form[f.name as keyof typeof form]}
+              onChange={handleChange}
+              placeholder={f.placeholder}
+              className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all"
+            />
+          </div>
+        ))}
+      </div>
+      {status === "error" && (
+        <p className="text-xs text-red-500 font-medium">Something went wrong — email us at hello@infygru.com</p>
+      )}
+      <button
+        type="submit"
+        disabled={status === "loading"}
+        className="w-full flex items-center justify-center gap-2 text-white font-black text-sm py-3.5 rounded-xl transition-all duration-200 disabled:opacity-70"
+        style={{ background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)", boxShadow: "0 6px 24px rgba(37,99,235,0.35)" }}
+      >
+        {status === "loading" ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</> : <><Send className="w-4 h-4" /> Get My Free Consultation</>}
+      </button>
+      <p className="text-center text-[11px] text-gray-400">Free 30-min call · No commitment · Reply within 24 hrs</p>
+    </form>
+  );
+}
+
+/* Full-section enquiry form used at bottom of page */
 function EnquiryForm() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -357,13 +434,12 @@ export default function Page() {
                   Travel Booking
                 </span>
                 <br />
-                Website for
+                Website for{" "}
+                <span className="text-white/40 line-through text-[0.75em]">£2,499</span>
                 <br />
                 <span
                   className="text-transparent bg-clip-text"
-                  style={{
-                    backgroundImage: "linear-gradient(90deg, #fbbf24, #f59e0b)",
-                  }}
+                  style={{ backgroundImage: "linear-gradient(90deg, #fbbf24, #f59e0b)" }}
                 >
                   £1,499.
                 </span>
@@ -434,66 +510,37 @@ export default function Page() {
               className="relative z-10"
             >
               <div
-                className="bg-white rounded-3xl p-8 relative"
+                className="bg-white rounded-3xl overflow-hidden relative"
                 style={{ boxShadow: "0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)" }}
               >
-                {/* gradient top bar */}
+                {/* gradient top bar — overflow-hidden on parent clips it correctly */}
                 <div
-                  className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
+                  className="h-1 w-full"
                   style={{ background: "linear-gradient(90deg, #2563eb, #7c3aed, #f59e0b)" }}
                 />
 
-                <div className="flex items-center justify-between mb-6 pb-6 border-b border-gray-100">
-                  <div>
-                    <div className="text-sm text-gray-400 font-medium mb-1">
-                      Complete Travel Platform
+                <div className="p-8">
+                  {/* Price header */}
+                  <div className="flex items-center justify-between mb-6 pb-5 border-b border-gray-100">
+                    <div>
+                      <div className="text-sm text-gray-400 font-medium mb-1">Complete Travel Platform</div>
+                      <div className="flex items-baseline gap-3">
+                        <span className="text-lg text-gray-400 line-through font-semibold">£2,499</span>
+                        <span className="text-4xl font-black text-gray-900">£1,499</span>
+                      </div>
+                      <div className="text-sm text-green-600 font-bold mt-1">One-time. No monthly fees ever.</div>
                     </div>
-                    <div className="text-5xl font-black text-gray-900">£1,499</div>
-                    <div className="text-sm text-green-600 font-bold mt-1">
-                      One-time. No monthly fees ever.
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs text-gray-400 line-through mb-1">Usually £4,000+</div>
                     <div
-                      className="text-xs font-black px-3 py-1.5 rounded-full text-white"
+                      className="text-xs font-black px-3 py-1.5 rounded-full text-white shrink-0"
                       style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
                     >
-                      SAVE £2,500+
+                      SAVE £1,000
                     </div>
                   </div>
-                </div>
 
-                <div className="space-y-3 mb-8">
-                  {[
-                    "Custom branded booking website",
-                    "Live prices from your suppliers",
-                    "Auto WhatsApp & email confirmations",
-                    "Admin dashboard — all bookings in one place",
-                    "Never lose a lead again",
-                    "Set up, trained, handed over to you",
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-3 text-sm text-gray-700">
-                      <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
-                      {item}
-                    </div>
-                  ))}
+                  {/* Inline enquiry form */}
+                  <HeroEnquiryForm />
                 </div>
-
-                <a
-                  href="mailto:hello@infygru.com?subject=UK Travel Platform — Book My Spot"
-                  className="group w-full flex items-center justify-center gap-2 text-white font-black text-base px-6 py-4 rounded-xl transition-all duration-200 mb-3"
-                  style={{
-                    background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
-                    boxShadow: "0 6px 28px rgba(37,99,235,0.35)",
-                  }}
-                >
-                  Book My Spot — £1,499{" "}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </a>
-                <p className="text-center text-xs text-gray-400">
-                  Free 30-min discovery call · No commitment
-                </p>
               </div>
 
               <div
@@ -1115,24 +1162,26 @@ export default function Page() {
 
           <Reveal delay={0.15}>
             <div
-              className="rounded-3xl p-8 md:p-12 text-left relative overflow-hidden"
+              className="rounded-3xl text-left overflow-hidden"
               style={{
                 background: "white",
                 boxShadow: "0 40px 100px rgba(0,0,0,0.5)",
               }}
             >
-              {/* gradient top bar */}
+              {/* gradient top bar — overflow-hidden on parent clips correctly */}
               <div
-                className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
-                style={{
-                  background: "linear-gradient(90deg, #2563eb, #7c3aed, #f59e0b)",
-                }}
+                className="h-1 w-full"
+                style={{ background: "linear-gradient(90deg, #2563eb, #7c3aed, #f59e0b)" }}
               />
 
+              <div className="p-8 md:p-12">
               <div className="flex items-center justify-between flex-wrap gap-4 mb-8 pb-8 border-b border-gray-100">
                 <div>
                   <div className="text-gray-400 text-sm mb-1">Complete Travel Platform</div>
-                  <div className="text-6xl font-black text-gray-900">£1,499</div>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-2xl text-gray-400 line-through font-semibold">£2,499</span>
+                    <span className="text-6xl font-black text-gray-900">£1,499</span>
+                  </div>
                   <div className="text-green-600 font-bold text-sm mt-1">
                     One payment. Yours forever.
                   </div>
@@ -1197,6 +1246,7 @@ export default function Page() {
               <p className="text-center text-xs text-gray-400 mt-4">
                 hello@infygru.com · Free 30-min discovery call · No hard sell, no commitment
               </p>
+              </div>{/* end inner padding div */}
             </div>
           </Reveal>
         </div>
