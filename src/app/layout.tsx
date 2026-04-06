@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import Script from "next/script";
 
@@ -318,9 +316,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jakarta.variable} font-sans antialiased flex flex-col min-h-screen`}
       >
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
         {/* Google Analytics — add your Measurement ID in environment variable */}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
