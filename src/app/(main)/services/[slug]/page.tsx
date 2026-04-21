@@ -109,7 +109,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     };
 
     // HowTo schema for processes that have clear steps (business registration, cloud migration, etc.)
-    const HOW_TO_SCHEMAS: Record<string, object> = {
+    const HOW_TO_SCHEMAS: Record<string, Record<string, unknown>> = {
         "business-registration": {
             "@context": "https://schema.org",
             "@type": "HowTo",
@@ -192,7 +192,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             : undefined,
     };
 
-    const howToSchema = HOW_TO_SCHEMAS[slug] || null;
+    const howToSchema: Record<string, unknown> | null = HOW_TO_SCHEMAS[slug] || null;
 
     const breadcrumbSchema = {
         "@context": "https://schema.org",
