@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import PaytmChecksum from "paytmchecksum";
 
+const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || "https://api.infygru.com";
+
 const PLAN_AMOUNTS: Record<string, string> = {
     // IT & Cloud Services
     "starter": "14999.00",
@@ -13,6 +15,15 @@ const PLAN_AMOUNTS: Record<string, string> = {
     "tax-business": "4999.00",
 };
 
+const PLAN_LABELS: Record<string, string> = {
+    "starter": "IT Starter Package",
+    "professional": "IT Professional Package",
+    "biz-basic": "Business Registration Basic",
+    "biz-growth": "Business Registration Growth",
+    "tax-individual": "Individual Tax Filing",
+    "tax-business": "Business Tax Filing",
+};
+
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -21,6 +32,26 @@ export async function POST(request: Request) {
         const amount = PLAN_AMOUNTS[plan];
         if (!amount) {
             return NextResponse.json({ error: "Invalid plan selected" }, { status: 400 });
+        }
+
+        // Save checkout customer as a lead in Directus (best-effort, non-blocking)
+        if (customerInfo?.email) {
+            fetch(`${DIRECTUS_URL}/items/leads`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: `${customerInfo.firstName || ""} ${customerInfo.lastName || ""}`.trim() || "Unknown",
+                    email: customerInfo.email,
+                    phone: customerInfo.phone || null,
+                    company: customerInfo.company || null,
+                    service_interest: PLAN_LABELS[plan] || plan,
+                    message: [
+                        customerInfo.jobTitle ? `Job Title: ${customerInfo.jobTitle}` : null,
+                        customerInfo.projectDescription ? `Project: ${customerInfo.projectDescription}` : null,
+                    ].filter(Boolean).join("\n") || null,
+                    source: `Checkout — ${PLAN_LABELS[plan] || plan}`,
+                }),
+            }).catch((err) => console.error("Checkout lead save error:", err));
         }
 
         const mid = process.env.PAYTM_MID || "XVTaon26026633479601";

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, TrendingUp, Clock, CheckCircle2, ChevronRight, Building2, Code, Cloud, Bot } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/JsonLd";
+import WhatsAppCTA from "@/components/WhatsAppCTA";
 import type { Metadata } from "next";
 
 const BASE_URL = "https://infygru.com";
@@ -272,9 +273,11 @@ export default function CaseStudies() {
                                     Learn about {cs.service} <ArrowRight className="ml-1.5 w-3.5 h-3.5" />
                                 </Button>
                             </Link>
-                            <a href="https://wa.me/918300290019" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-amber-600 hover:text-amber-500 transition-colors">
-                                Get similar results →
-                            </a>
+                            <WhatsAppCTA
+                                service={cs.service}
+                                label="Get similar results →"
+                                className="text-sm font-medium text-amber-600 hover:text-amber-500 transition-colors"
+                            />
                         </div>
 
                         {idx < caseStudies.length - 1 && (
@@ -295,11 +298,11 @@ export default function CaseStudies() {
                         Join 300+ businesses across India that have scaled with Infygru. Schedule a free discovery call today.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="https://wa.me/918300290019" target="_blank" rel="noopener noreferrer">
-                            <Button size="lg" className="font-heading font-extrabold h-13 px-8 text-base shadow-xl hover:-translate-y-1 transition-transform bg-amber-500 hover:bg-amber-400 text-white rounded-xl">
-                                Schedule Free Consultation <ArrowRight className="ml-2 w-5 h-5" />
-                            </Button>
-                        </a>
+                        <WhatsAppCTA
+                            service="Free Discovery Consultation"
+                            label="Schedule Free Consultation"
+                            className="inline-flex items-center gap-2 font-heading font-extrabold px-8 py-4 text-base shadow-xl hover:-translate-y-1 transition-transform bg-amber-500 hover:bg-amber-400 text-white rounded-xl"
+                        />
                         <Link href="/offerings">
                             <Button size="lg" variant="outline" className="font-heading font-bold h-13 px-8 text-base border-white/20 text-white hover:bg-white/10 rounded-xl">
                                 View All Services

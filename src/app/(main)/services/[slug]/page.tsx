@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/JsonLd";
+import WhatsAppCTA from "@/components/WhatsAppCTA";
 import { CheckCircle2, ArrowLeft, ArrowRight, ChevronRight, Zap, ShieldCheck, Activity, Clock, HelpCircle } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -14,13 +15,36 @@ export function generateStaticParams() {
     }));
 }
 
+// Targeted title overrides for high-value service pages
+const SERVICE_TITLE_OVERRIDES: Record<string, string> = {
+    "web-development": "Web Development Company Chennai | Custom Next.js & React Apps | Infygru",
+    "business-registration": "Company Registration in India | Private Ltd, LLP, GST & Trademark | Infygru",
+    "compliance-taxation": "GST Filing & ITR Services India | Compliance & Taxation Experts | Infygru",
+    "n8n-automation": "n8n Workflow Automation Experts India | Self-Hosted n8n Consulting | Infygru",
+    "cloud-migration": "Cloud Migration Services India | AWS, Azure & GCP Experts | Infygru",
+    "devops": "DevOps Consulting India | CI/CD, Kubernetes & Infrastructure as Code | Infygru",
+    "digital-transformation": "Digital Transformation Consulting India | Enterprise IT Strategy | Infygru",
+    "security-operations": "Cybersecurity & SOC Services India | 24/7 Threat Monitoring | Infygru",
+    "data-analytics": "Data Analytics & Business Intelligence India | Custom BI Dashboards | Infygru",
+    "ai-computer-vision": "AI & Computer Vision Solutions India | Custom ML Models | Infygru",
+    "servicenow": "ServiceNow Implementation India | ITSM & Enterprise Workflows | Infygru",
+};
+
+const SERVICE_DESCRIPTION_OVERRIDES: Record<string, string> = {
+    "web-development": "Infygru builds ultra-fast Next.js & React websites for Indian businesses. Get a custom, SEO-optimized website with 90+ Lighthouse score. Serving Chennai, Bangalore, Mumbai & all India. Free consultation.",
+    "business-registration": "Register your company in India in 5–7 days. Private Limited, LLP, OPC, GST registration, Trademark, MSME & more. Expert CAs and Company Secretaries. Transparent pricing from ₹2,499.",
+    "compliance-taxation": "Expert GST return filing, ITR filing, ROC compliance & IATF certification. CAs serving startups and enterprises across India. Never miss a deadline. Get a free compliance audit.",
+    "n8n-automation": "Self-hosted n8n workflow automation to replace Zapier/Make. Unlimited executions, full data sovereignty, and expert setup. Save 200+ hours/month. Free workflow discovery workshop.",
+    "cloud-migration": "Zero-downtime migration to AWS, Azure, or GCP. Certified cloud architects, 30–50% cost reduction, and 99.9% uptime SLA. Free infrastructure assessment.",
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
     const service = servicesData.find((s) => s.slug === slug);
     if (!service) return { title: 'Service Not Found | Infygru' };
 
-    const title = `${service.title} | Enterprise ${service.title} Services in India | Infygru`;
-    const description = service.longDescription?.substring(0, 160) || service.description;
+    const title = SERVICE_TITLE_OVERRIDES[slug] || `${service.title} Services India | Enterprise ${service.title} Company | Infygru`;
+    const description = SERVICE_DESCRIPTION_OVERRIDES[slug] || service.longDescription?.substring(0, 160) || service.description;
 
     return {
         title,
@@ -28,14 +52,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         keywords: service.seoKeywords || [service.title, "Chennai", "India", "enterprise"],
         alternates: { canonical: `${BASE_URL}/services/${slug}` },
         openGraph: {
-            title: `${service.title} Services | Infygru`,
+            title: SERVICE_TITLE_OVERRIDES[slug] || `${service.title} Services | Infygru`,
             description: service.description,
             url: `${BASE_URL}/services/${slug}`,
             images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630 }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `${service.title} | Infygru`,
+            title: SERVICE_TITLE_OVERRIDES[slug] || `${service.title} | Infygru`,
             description: service.description,
         },
     };
@@ -75,6 +99,57 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     const accent = accentColors[slug] || defaultAccent;
     const relatedServices = servicesData.filter(s => s.slug !== slug).slice(0, 3);
 
+    // Starting prices for key services (shown in Service schema — improves CTR in search results)
+    const SERVICE_STARTING_PRICES: Record<string, { price: string; currency: string }> = {
+        "web-development": { price: "25000", currency: "INR" },
+        "business-registration": { price: "2499", currency: "INR" },
+        "compliance-taxation": { price: "999", currency: "INR" },
+        "n8n-automation": { price: "25000", currency: "INR" },
+        "cloud-migration": { price: "50000", currency: "INR" },
+    };
+
+    // HowTo schema for processes that have clear steps (business registration, cloud migration, etc.)
+    const HOW_TO_SCHEMAS: Record<string, object> = {
+        "business-registration": {
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "@id": `${BASE_URL}/services/business-registration#howto`,
+            name: "How to Register a Company in India",
+            description: "Step-by-step guide to registering a Private Limited Company in India through the MCA SPICe+ portal.",
+            totalTime: "PT7D",
+            supply: [
+                { "@type": "HowToSupply", name: "PAN Card of all directors" },
+                { "@type": "HowToSupply", name: "Aadhaar Card of all directors" },
+                { "@type": "HowToSupply", name: "Address proof for registered office" },
+                { "@type": "HowToSupply", name: "Passport-size photographs" },
+            ],
+            step: [
+                { "@type": "HowToStep", position: 1, name: "Obtain Digital Signature Certificate (DSC)", text: "Apply for a Class 3 DSC for all proposed directors. DSC is required to digitally sign MCA forms. Takes 1–2 working days." },
+                { "@type": "HowToStep", position: 2, name: "Apply for Director Identification Number (DIN)", text: "Directors who do not already have a DIN must apply via the SPICe+ form. The DIN is included in the incorporation filing." },
+                { "@type": "HowToStep", position: 3, name: "Reserve Company Name via RUN or SPICe+", text: "Submit your proposed company name for approval with the MCA. Two name options can be submitted. Approval typically takes 1–3 working days." },
+                { "@type": "HowToStep", position: 4, name: "Draft Memorandum and Articles of Association", text: "Prepare the MOA (company objectives) and AOA (internal governance rules) in compliance with the Companies Act 2013." },
+                { "@type": "HowToStep", position: 5, name: "File SPICe+ Form with MCA", text: "Submit the complete SPICe+ (Simplified Proforma for Incorporating Company Electronically Plus) form along with MOA, AOA, and all director documents." },
+                { "@type": "HowToStep", position: 6, name: "Receive Certificate of Incorporation", text: "The Registrar of Companies (ROC) issues the Certificate of Incorporation (CIN), PAN, and TAN simultaneously. This completes the company registration process." },
+                { "@type": "HowToStep", position: 7, name: "Register for GST", text: "Apply for GSTIN on the GST portal within 30 days of crossing the threshold or from the date of registration if you plan to issue tax invoices immediately." },
+            ],
+        },
+        "cloud-migration": {
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "@id": `${BASE_URL}/services/cloud-migration#howto`,
+            name: "How to Migrate to the Cloud (AWS / Azure / GCP)",
+            description: "Infygru's proven 4-phase cloud migration methodology for zero-downtime cloud transitions.",
+            step: [
+                { "@type": "HowToStep", position: 1, name: "Infrastructure Assessment", text: "Audit current on-premise or legacy infrastructure, identify workloads, and produce a cost-benefit analysis and risk register." },
+                { "@type": "HowToStep", position: 2, name: "Migration Strategy Design", text: "Select the right migration strategy for each workload: rehost (lift-and-shift), replatform, refactor, or rebuild. Design target cloud architecture." },
+                { "@type": "HowToStep", position: 3, name: "Execute Migration", text: "Migrate workloads using blue-green deployment or parallel run strategies to ensure zero downtime. Test each workload in the cloud before production cutover." },
+                { "@type": "HowToStep", position: 4, name: "Optimize and Monitor", text: "Implement cloud cost optimization (FinOps), set up CloudTrail/Azure Monitor, enforce IAM policies, and monitor performance with Datadog or Prometheus." },
+            ],
+        },
+    };
+
+    const startingPrice = SERVICE_STARTING_PRICES[slug];
+
     const serviceSchema = {
         "@context": "https://schema.org",
         "@type": "Service",
@@ -89,6 +164,21 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             "@type": "Country",
             name: "India",
         },
+        ...(startingPrice ? {
+            offers: {
+                "@type": "Offer",
+                price: startingPrice.price,
+                priceCurrency: startingPrice.currency,
+                priceSpecification: {
+                    "@type": "PriceSpecification",
+                    price: startingPrice.price,
+                    priceCurrency: startingPrice.currency,
+                    description: `Starting price for ${service.title} services`,
+                },
+                seller: { "@id": `${BASE_URL}/#organization` },
+                url: `${BASE_URL}/pricing`,
+            },
+        } : {}),
         hasOfferCatalog: service.features.length > 0
             ? {
                 "@type": "OfferCatalog",
@@ -101,6 +191,8 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             }
             : undefined,
     };
+
+    const howToSchema = HOW_TO_SCHEMAS[slug] || null;
 
     const breadcrumbSchema = {
         "@context": "https://schema.org",
@@ -130,6 +222,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             <JsonLd data={serviceSchema} />
             <JsonLd data={breadcrumbSchema} />
             {faqSchema && <JsonLd data={faqSchema} />}
+            {howToSchema && <JsonLd data={howToSchema} />}
 
             {/* ── Compact Hero ── */}
             <section className="relative py-14 bg-slate-950 overflow-hidden">
@@ -304,11 +397,11 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                             <p className="text-slate-600 text-sm mb-5 leading-relaxed">
                                 Our enterprise architects are ready to design a custom blueprint for your business.
                             </p>
-                            <a href="https://wa.me/918300290019" target="_blank" rel="noopener noreferrer">
-                                <Button size="sm" className="w-full font-bold bg-amber-500 hover:bg-amber-400 text-white rounded-xl shadow-md hover:-translate-y-0.5 transition-all">
-                                    Schedule Free Consultation <ArrowRight className="ml-1.5 w-4 h-4" />
-                                </Button>
-                            </a>
+                            <WhatsAppCTA
+                                service={service.title}
+                                label="Schedule Free Consultation"
+                                className="w-full flex items-center justify-center gap-1.5 font-bold bg-amber-500 hover:bg-amber-400 text-white rounded-xl shadow-md hover:-translate-y-0.5 transition-all px-4 py-2.5 text-sm"
+                            />
                         </div>
 
                         {/* Related Services */}
@@ -352,11 +445,11 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                         Our enterprise architects are ready to design a custom blueprint mapped exactly to your operational goals. Schedule a deep-dive consultation.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="https://wa.me/918300290019" target="_blank" rel="noopener noreferrer">
-                            <Button size="lg" className="font-heading font-extrabold h-13 px-8 text-base shadow-xl hover:-translate-y-1 transition-transform bg-amber-500 hover:bg-amber-400 text-white rounded-xl">
-                                Consult With An Expert <ArrowRight className="ml-2 w-5 h-5" />
-                            </Button>
-                        </a>
+                        <WhatsAppCTA
+                            service={service.title}
+                            label="Consult With An Expert"
+                            className="inline-flex items-center gap-2 font-heading font-extrabold px-8 py-4 text-base shadow-xl hover:-translate-y-1 transition-transform bg-amber-500 hover:bg-amber-400 text-white rounded-xl"
+                        />
                         <Link href="/offerings">
                             <Button size="lg" variant="outline" className="font-heading font-bold h-13 px-8 text-base border-white/20 text-white hover:bg-white/10 rounded-xl">
                                 View All Services

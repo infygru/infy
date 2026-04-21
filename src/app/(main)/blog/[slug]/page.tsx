@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Clock, User, Calendar, Tag } from "lucide-react";
 import { getBlogPost, getBlogPosts } from "@/lib/directus";
 import { JsonLd } from "@/components/JsonLd";
+import WhatsAppCTA from "@/components/WhatsAppCTA";
 import type { Metadata, ResolvingMetadata } from "next";
 
 const BASE_URL = "https://infygru.com";
@@ -248,9 +249,11 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                 <div className="container mx-auto px-4 max-w-2xl">
                     <h2 className="font-heading text-3xl font-extrabold text-white mb-4">Need Expert Help?</h2>
                     <p className="text-slate-400 font-light mb-8">Our team of specialists is ready to assist with your business registration, compliance, or technology needs.</p>
-                    <Link href="https://wa.me/918300290019" className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-bold px-8 py-4 rounded-xl transition-colors font-heading">
-                        Schedule a Free Consultation
-                    </Link>
+                    <WhatsAppCTA
+                        service="Free Consultation (Blog)"
+                        label="Schedule a Free Consultation"
+                        className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-bold px-8 py-4 rounded-xl transition-colors font-heading"
+                    />
                 </div>
             </section>
         </div>

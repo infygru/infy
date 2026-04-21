@@ -35,6 +35,14 @@ export const servicesData = [
             {
                 question: "How long does a digital transformation take?",
                 answer: "The timeline varies based on enterprise size, but initial milestones are typically achieved within 3-6 months."
+            },
+            {
+                question: "What is the ROI of digital transformation for a mid-size company?",
+                answer: "Based on our engagements, mid-size companies typically see 35–60% reduction in operational costs, 40–50% faster time-to-market, and 20–30% revenue growth within 12–18 months of transformation. The exact ROI depends on which processes are automated and which legacy systems are replaced."
+            },
+            {
+                question: "How do you handle change management during digital transformation?",
+                answer: "Change management is a core pillar of every Infygru transformation engagement. We conduct stakeholder workshops, appoint internal champions, run training programs, and establish feedback loops. We use the Prosci ADKAR model to track adoption across departments — ensuring technology investments translate into actual behavioral change."
             }
         ]
     },
@@ -49,13 +57,18 @@ export const servicesData = [
         ],
         iconName: "Code",
         seoKeywords: [
-            "enterprise web development Chennai",
+            "web development company Chennai",
+            "website development company India",
             "Next.js development agency India",
             "React web application company",
-            "custom CMS development",
-            "high-performance web apps",
+            "custom website development India",
             "professional website design Chennai",
-            "e-commerce portal development"
+            "e-commerce website development India",
+            "affordable website development India",
+            "best web development company Chennai",
+            "hire web developers India",
+            "Next.js agency India",
+            "custom CMS website development"
         ],
         features: [
             "Custom Web Apps",
@@ -67,12 +80,32 @@ export const servicesData = [
         relatedSlugs: ["digital-transformation", "n8n-automation", "data-analytics"],
         faqs: [
             {
+                question: "How much does a professional website cost in India?",
+                answer: "Website development costs in India range from ₹25,000 for a basic business website to ₹2,00,000+ for a custom enterprise web application. Infygru's projects typically start at ₹35,000 for a 5–10 page Next.js website with full SEO, CMS integration, and a 90+ Lighthouse score. We provide transparent fixed-price quotes after a discovery call."
+            },
+            {
+                question: "Why should I choose Next.js over WordPress for my business website?",
+                answer: "Next.js delivers 3–5× faster load times than WordPress, which directly improves Google rankings and conversion rates. Unlike WordPress, Next.js websites don't require plugin updates, have zero security vulnerabilities from third-party themes, and scale infinitely on modern cloud infrastructure. For businesses that need SEO performance and reliability, Next.js is the clear choice."
+            },
+            {
                 question: "Can you help with Next.js development and SEO?",
-                answer: "Yes, we specialize in Next.js which provides excellent server-side rendering (SSR) and static site generation (SSG) for superior SEO performance."
+                answer: "Yes, we specialize in Next.js which provides excellent server-side rendering (SSR) and static site generation (SSG) for superior SEO performance. Every Infygru project includes JSON-LD structured data, Core Web Vitals optimization, canonical tags, and a Lighthouse score of 90+ before delivery."
             },
             {
                 question: "How long does it take to develop an enterprise website?",
-                answer: "A standard enterprise website typically takes 4-8 weeks from discovery to deployment."
+                answer: "A standard enterprise website typically takes 4–8 weeks from discovery to deployment. A simple marketing website takes 2–3 weeks, a website with CMS takes 4–5 weeks, and a full custom web application with integrations takes 6–12 weeks. We work in 2-week sprints so you see progress continuously."
+            },
+            {
+                question: "Do you provide website maintenance and hosting after launch?",
+                answer: "Yes. All Infygru website projects come with a 30-day post-launch support period. We also offer monthly maintenance retainers covering security patches, CMS updates, performance monitoring, and CI/CD deployments. Hosting is typically arranged on AWS, Vercel, or your existing infrastructure — we configure and manage it."
+            },
+            {
+                question: "Can you redesign my existing website without starting from scratch?",
+                answer: "Absolutely. We assess your current site's architecture, content, and SEO standing before recommending a migration strategy. For WordPress-to-Next.js migrations, we preserve all existing URLs and 301-redirect mappings to protect your search rankings. Typical redesigns take 3–5 weeks."
+            },
+            {
+                question: "What is the difference between a static website and a web application?",
+                answer: "A static website delivers fixed HTML pages — ideal for marketing sites, portfolios, and landing pages. A web application has dynamic user interactions, authentication, databases, and custom logic — ideal for SaaS products, portals, and e-commerce. We build both using Next.js, which supports static generation for speed and server-side rendering for dynamic content."
             }
         ]
     },
@@ -110,7 +143,15 @@ export const servicesData = [
             },
             {
                 question: "What can be automated using n8n?",
-                answer: "Almost anything with an API—from CRM-Email syncing to complex financial reporting and automated customer support."
+                answer: "Almost anything with an API — from CRM-email syncing and lead routing to complex financial reporting, inventory management, HR onboarding workflows, and real-time Slack/WhatsApp notifications. If your app has an API or webhook, n8n can integrate with it."
+            },
+            {
+                question: "How much does n8n automation consulting cost?",
+                answer: "Infygru's n8n automation projects typically start at ₹25,000 for a single workflow automation (e.g., CRM-to-email sync) and scale to ₹1,50,000+ for full enterprise workflow suites. Most clients recover this cost within 1–2 months through saved operational hours."
+            },
+            {
+                question: "Can n8n replace our existing Zapier or Make.com workflows?",
+                answer: "Yes. We specialize in migrating existing Zapier and Make.com workflows to self-hosted n8n. The migration typically takes 1–2 weeks and eliminates recurring Zapier/Make subscription costs. We recreate all existing workflows with improved error handling and monitoring in n8n."
             }
         ]
     },
@@ -299,15 +340,24 @@ export const servicesData = [
         ],
         iconName: "Building2",
         seoKeywords: [
+            "company registration India",
             "company incorporation India",
+            "private limited company registration India",
+            "how to register a company in India",
+            "online company registration India",
+            "LLP registration India",
+            "OPC registration India",
+            "GST registration India",
+            "GST registration Chennai",
+            "trademark registration India",
             "trademark registration Chennai",
-            "GST registration experts",
-            "MSME registration online",
+            "MSME registration online India",
+            "Udyam registration",
             "FSSAI food license India",
-            "IEC registration services",
-            "APEDA registration help",
-            "Private Limited Company registration",
-            "Sole Proprietorship registration"
+            "IEC registration services India",
+            "company registration cost India",
+            "SPICe+ company registration",
+            "business registration services Chennai"
         ],
         features: [
             "Company Incorporation",
@@ -323,20 +373,36 @@ export const servicesData = [
         relatedSlugs: ["compliance-taxation", "digital-transformation", "web-development"],
         faqs: [
             {
+                question: "How do I register a company in India?",
+                answer: "To register a Private Limited Company in India, you need to: (1) Obtain Digital Signature Certificates (DSC) for all directors, (2) Apply for Director Identification Numbers (DIN), (3) File the SPICe+ form on the MCA portal with the Memorandum and Articles of Association, (4) Receive the Certificate of Incorporation from the Registrar of Companies. The entire process takes 5–7 working days. Infygru handles every step end-to-end."
+            },
+            {
                 question: "What documents are required for company incorporation?",
-                answer: "Typically, PAN cards, Aadhar cards, bank statements of directors, and proof of registered office address are required."
+                answer: "For Private Limited Company registration in India, you need: PAN card and Aadhaar card of all directors and shareholders, passport-size photographs, bank statement or utility bill (not older than 2 months) as proof of registered office address, and a No Objection Certificate (NOC) from the property owner if the office is rented. For foreign nationals, a notarized and apostilled passport copy is required."
+            },
+            {
+                question: "What is the difference between a Private Limited Company and an LLP?",
+                answer: "A Private Limited Company has limited liability, can issue equity shares to investors, and is ideal for startups seeking VC or angel funding. It has higher compliance requirements (annual ROC filings, board meetings, statutory audit). An LLP (Limited Liability Partnership) has limited liability with partnership flexibility, lower compliance requirements, no mandatory audit below ₹40 lakh turnover, and is ideal for professional services firms, consultancies, and small businesses not seeking equity investment."
+            },
+            {
+                question: "How much does company registration cost in India?",
+                answer: "Government fees for Private Limited Company registration start from ₹0 (waived for companies with share capital up to ₹15 lakh under SPICe+ scheme). Total costs including DSC, DIN, stamp duty, and professional fees typically range from ₹6,000 to ₹15,000. Infygru's Basic Business Registration package is priced at ₹2,499 inclusive of all government fees and professional services."
             },
             {
                 question: "How long does GST registration take?",
-                answer: "GST registration usually takes 3 to 7 working days, subject to government approval and documentation accuracy."
+                answer: "GST registration in India typically takes 3–7 working days from the date of application submission with complete documents. The GST officer has 7 working days to approve or seek clarification. If clarification is sought, the applicant has 7 days to respond. Infygru prepares all documentation upfront to minimize back-and-forth and typically achieves GSTIN issuance within 5 working days."
             },
             {
-                question: "What is the difference between Private Limited and LLP registration?",
-                answer: "A Private Limited Company has limited liability, can issue equity shares, and is ideal for startups seeking funding. An LLP combines limited liability with partnership flexibility and has lower compliance requirements, making it ideal for professional services firms."
+                question: "What is trademark registration and why do I need it?",
+                answer: "Trademark registration gives you exclusive legal rights to your brand name, logo, or tagline in India for 10 years (renewable indefinitely). Without registration, anyone can legally use a similar name and you have limited recourse. Trademark registration costs ₹4,500 in government fees for MSME/startups (₹9,000 for others) per class. Infygru's trademark attorneys conduct a comprehensive search before filing to minimize rejection risk."
             },
             {
                 question: "Is MSME registration mandatory?",
-                answer: "No, it is voluntary but highly beneficial. MSME/Udyam registration gives access to government subsidies, 45-day payment protection law, priority sector lending, and 50% reduction in trademark filing fees."
+                answer: "No, MSME/Udyam registration is voluntary but highly beneficial. Benefits include access to government subsidies and schemes, collateral-free loans up to ₹2 crore under CGTMSE, protection under the MSME Act (buyers must pay within 45 days or pay 3× bank rate interest), 50% reduction in trademark filing fees, priority sector lending rates, and preference in government tender procurement."
+            },
+            {
+                question: "Can I register a company in India if I am an NRI or foreign national?",
+                answer: "Yes. NRIs and foreign nationals can be directors and shareholders in Indian companies. They need a notarized and apostilled copy of their passport, overseas address proof, and an Indian residential address for at least one director (a local nominee director can be arranged). FDI in most sectors is permitted under the automatic route, meaning no government approval is required prior to investment."
             }
         ]
     },

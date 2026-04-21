@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Check, ArrowRight, Zap, Users, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { JsonLd } from "@/components/JsonLd";
+import WhatsAppCTA from "@/components/WhatsAppCTA";
 import type { Metadata } from "next";
 
 const BASE_URL = "https://infygru.com";
@@ -390,22 +391,32 @@ function PlanCard({ plan, accentBg, accentText }: { plan: Plan; accentBg: string
                 </ul>
 
                 <div className="mt-8">
-                    <Link
-                        href={plan.ctaLink}
-                        target={plan.ctaLink.startsWith("http") ? "_blank" : undefined}
-                        rel={plan.ctaLink.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className="block w-full"
-                    >
-                        <Button
-                            variant={plan.popular ? "default" : "outline"}
-                            className={`w-full font-heading font-bold h-12 rounded-xl ${plan.popular
-                                ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg hover:shadow-amber-200 hover:-translate-y-0.5 transition-all border-0'
+                    {plan.ctaLink.startsWith("https://wa.me") ? (
+                        <WhatsAppCTA
+                            service={plan.name}
+                            label={plan.cta}
+                            className={`w-full font-heading font-bold h-12 rounded-xl flex items-center justify-center gap-2 border transition-all ${plan.popular
+                                ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg hover:shadow-amber-200 hover:-translate-y-0.5 border-0'
                                 : 'border-slate-200 hover:bg-slate-50 text-slate-900'
                                 }`}
                         >
-                            {plan.cta} {plan.popular && <ArrowRight className="ml-2 w-4 h-4" />}
-                        </Button>
-                    </Link>
+                            <span className="flex items-center gap-2 font-heading font-bold text-sm">
+                                {plan.cta} <ArrowRight className="w-4 h-4" />
+                            </span>
+                        </WhatsAppCTA>
+                    ) : (
+                        <Link href={plan.ctaLink} className="block w-full">
+                            <Button
+                                variant={plan.popular ? "default" : "outline"}
+                                className={`w-full font-heading font-bold h-12 rounded-xl ${plan.popular
+                                    ? 'bg-amber-500 hover:bg-amber-400 text-white shadow-lg hover:shadow-amber-200 hover:-translate-y-0.5 transition-all border-0'
+                                    : 'border-slate-200 hover:bg-slate-50 text-slate-900'
+                                    }`}
+                            >
+                                {plan.cta} {plan.popular && <ArrowRight className="ml-2 w-4 h-4" />}
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </div>
         </div>
@@ -490,11 +501,11 @@ export default function Pricing() {
                     <p className="text-slate-400 mb-8 font-light max-w-xl mx-auto">
                         Multi-region cloud deployments, complex automation pipelines, or large-scale company registrations — let's talk custom pricing.
                     </p>
-                    <Link href="https://wa.me/918300290019" target="_blank" rel="noopener noreferrer">
-                        <Button size="lg" className="font-heading font-extrabold px-10 h-13 bg-amber-500 hover:bg-amber-400 text-white rounded-xl shadow-xl hover:-translate-y-1 transition-all">
-                            Talk to Our Solutions Architect <ArrowRight className="ml-2 w-5 h-5" />
-                        </Button>
-                    </Link>
+                    <WhatsAppCTA
+                        service="Custom Enterprise Solution"
+                        label="Talk to Our Solutions Architect"
+                        className="inline-flex items-center gap-2 font-heading font-extrabold px-10 py-4 bg-amber-500 hover:bg-amber-400 text-white rounded-xl shadow-xl hover:-translate-y-1 transition-all"
+                    />
                 </div>
             </section>
         </div>

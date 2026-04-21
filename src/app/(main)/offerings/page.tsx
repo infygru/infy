@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, Code, Shield, Bot, Workflow, BarChart, Cloud, Building2, Briefcase, Server, Database, Eye, ChevronRight } from "lucide-react";
+import WhatsAppCTA from "@/components/WhatsAppCTA";
 import { Button } from "@/components/ui/Button";
 import { servicesData } from "@/lib/data";
 import { motion } from "framer-motion";
@@ -260,11 +261,11 @@ export default function Offerings() {
                     >
                         <h2 className="font-heading text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">Not sure which service fits?</h2>
                         <p className="text-slate-400 mb-8">Schedule a free consultation and our team will guide you to the right solution.</p>
-                        <Link href="https://wa.me/918300290019" target="_blank" rel="noopener noreferrer">
-                            <Button size="lg" className="font-heading font-extrabold px-10 h-13 text-base shadow-xl hover:-translate-y-1 transition-transform bg-amber-500 hover:bg-amber-400 text-white rounded-xl">
-                                Schedule a Free Call <ArrowRight className="ml-2 w-4 h-4" />
-                            </Button>
-                        </Link>
+                        <WhatsAppCTA
+                            service="Free Consultation"
+                            label="Schedule a Free Call"
+                            className="inline-flex items-center gap-2 font-heading font-extrabold px-10 py-4 text-base shadow-xl hover:-translate-y-1 transition-transform bg-amber-500 hover:bg-amber-400 text-white rounded-xl"
+                        />
                     </motion.div>
                 </div>
             </section>

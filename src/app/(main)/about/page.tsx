@@ -3,20 +3,30 @@ import { JsonLd } from "@/components/JsonLd";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "About Infygru | Enterprise IT Consulting & Digital Transformation — Chennai",
-    description: "Infygru is Chennai's premier IT solutions firm. We specialize in enterprise web development (Next.js), n8n automation, cloud migration, AI, DevOps, and full business registration services across India.",
-    keywords: ["IT consulting firm Chennai", "enterprise web development India", "DevOps services India", "n8n automation experts", "digital transformation company Chennai"],
+    title: "About Infygru | Web Development & Company Registration Company — Chennai, India",
+    description: "Infygru is a Chennai-based IT company delivering custom web development (Next.js), company registration, GST filing, n8n automation, cloud migration, and DevOps for startups and enterprises across India.",
+    keywords: [
+        "about Infygru",
+        "web development company Chennai",
+        "IT company Chennai India",
+        "company registration services Chennai",
+        "enterprise web development company India",
+        "n8n automation experts India",
+        "cloud migration company Chennai",
+        "digital transformation consulting India",
+        "top IT company Chennai",
+    ],
     alternates: { canonical: "https://infygru.com/about" },
     openGraph: {
-        title: "About Infygru | Enterprise IT Consulting — Chennai, India",
-        description: "Meet the team behind India's fastest-growing enterprise IT and business compliance company. Based in Chennai, serving pan-India.",
+        title: "About Infygru | Web Development & Company Registration — Chennai",
+        description: "Chennai-based IT company offering custom web development, company registration, GST filing, cloud migration & n8n automation. Trusted by 300+ businesses across India.",
         url: "https://infygru.com/about",
         images: [{ url: "https://infygru.com/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
         card: "summary_large_image",
-        title: "About Infygru | Enterprise IT Consulting — Chennai",
-        description: "Chennai's premier IT solutions firm. Web development, automation, cloud, AI, and business compliance.",
+        title: "About Infygru | Web Dev & Company Registration — Chennai",
+        description: "Chennai's IT company for web development, company registration, GST, cloud & automation. 300+ projects delivered.",
     },
 };
 

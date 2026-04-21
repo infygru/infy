@@ -3,20 +3,29 @@ import type { ReactNode } from "react";
 import { JsonLd } from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-    title: "Contact Us | Get a Free IT & Business Consultation — Infygru Chennai",
-    description: "Contact Infygru for enterprise IT solutions, web development, cloud migration, n8n automation, business registration, and compliance services. Based in Chennai, serving Pan-India.",
-    keywords: ["contact IT company Chennai", "free consultation IT services India", "web development quote India", "business registration help Chennai"],
+    title: "Contact Infygru | Free Web Development & Company Registration Consultation — Chennai",
+    description: "Talk to our experts for web development, company registration, GST filing, cloud migration, or n8n automation. Based in Chennai. Free 30-min consultation. Same-day response.",
+    keywords: [
+        "contact web development company Chennai",
+        "free consultation IT company India",
+        "web development quote Chennai",
+        "company registration consultant Chennai",
+        "GST registration help Chennai",
+        "hire web developer Chennai",
+        "IT company contact Chennai",
+        "business registration consultant India",
+    ],
     alternates: { canonical: "https://infygru.com/contact" },
     openGraph: {
-        title: "Contact Infygru | Free IT & Business Consultation",
-        description: "Talk to our enterprise architects and compliance experts. Based in Chennai, serving businesses across India.",
+        title: "Contact Infygru | Free Web Dev & Company Registration Consultation",
+        description: "Talk to Chennai's top IT and compliance experts. Free 30-min consultation. Web development, company registration, GST, cloud & automation.",
         url: "https://infygru.com/contact",
         images: [{ url: "https://infygru.com/og-image.png", width: 1200, height: 630 }],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Contact Infygru | Free IT & Business Consultation",
-        description: "Get in touch with Chennai's top IT and compliance company.",
+        title: "Contact Infygru | Free Consultation — Chennai",
+        description: "Free 30-min consultation for web development, company registration, GST, cloud migration & automation.",
     },
 };
 
